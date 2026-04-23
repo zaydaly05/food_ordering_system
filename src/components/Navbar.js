@@ -28,9 +28,7 @@ export default function Navbar({ setIsCartOpen }) {
               <Link to="/settings" className="hover:text-orange-500">Settings</Link>
               <button onClick={() => { logout(); toast.success("Signed out"); navigate('/'); }} className="hover:text-orange-500">Sign out</button>
             </>
-          ) : (
-            <button onClick={() => openLogin()} className="hover:text-orange-500">Login</button>
-          )}
+          ) : null}
         </nav>
 
         <div className="flex items-center gap-4">
@@ -74,9 +72,7 @@ export default function Navbar({ setIsCartOpen }) {
                 <Link to="/settings" onClick={() => setOpen(false)}>Settings</Link>
                 <button onClick={() => { logout(); toast.success("Signed out"); setOpen(false); navigate('/'); }}>Sign out</button>
               </>
-            ) : (
-              <button onClick={() => { openLogin(); setOpen(false); }}>Login</button>
-            )}
+            ) : null}
           </div>
         </div>
       )}

@@ -60,9 +60,9 @@ export default function App() {
                 <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
                 <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
 
-                <Route path="/admin" element={<RequireAuth><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
-                <Route path="/admin/products" element={<RequireAuth><AdminLayout><Products /></AdminLayout></RequireAuth>} />
-                <Route path="/admin/orders" element={<RequireAuth><AdminLayout><OrdersAdmin /></AdminLayout></RequireAuth>} />
+                <Route path="/admin" element={<AdminLayout><Dashboard /></AdminLayout>} />
+                <Route path="/admin/products" element={<AdminLayout><Products /></AdminLayout>} />
+                <Route path="/admin/orders" element={<AdminLayout><OrdersAdmin /></AdminLayout>} />
 
                 <Route path="*" element={<NotFound />} />
             </Routes>

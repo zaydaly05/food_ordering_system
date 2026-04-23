@@ -49,7 +49,7 @@ export default function Landing() {
 
             <div className="mt-6 flex gap-3">
               <Link to="/menu" className="bg-orange-500 text-white px-4 py-2 rounded">View Menu</Link>
-              <Link to="/about" className="px-4 py-2 border rounded">About Us</Link>
+              <Link to="/about" className="px-4 py-2 border rounded"> About Us</Link>
             </div>
           </div>
 
@@ -62,8 +62,8 @@ export default function Landing() {
       </section>
 
       <section className="mt-4 bg-white p-6 rounded shadow">
-        <h2 className="text-2xl font-bold">About Us</h2>
-        <p className="mt-3 text-gray-600">FoodApp is a modern delivery service bringing tasty meals from local kitchens to your door. We focus on quality ingredients, speedy delivery, and an easy ordering experience.</p>
+        <h2 className="text-2xl font-bold">Mission & Vision</h2>
+        <p className="mt-3 text-gray-600">Our mission is to connect people with great local food while supporting neighborhood kitchens. We deliver fresh, affordable meals quickly and sustainably. Our vision is to become the most trusted food delivery service, prioritizing quality, community, and convenience for every customer.</p>
       </section>
     </main>
   );
