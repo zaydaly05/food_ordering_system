@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import CartDrawer from "./components/CartDrawer";
@@ -16,6 +16,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import Products from "./pages/admin/Products";
 import OrdersAdmin from "./pages/admin/OrdersAdmin";
 import AdminLayout from "./layouts/AdminLayout";
+import RequireAuth from "./components/RequireAuth";
 
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -48,26 +49,33 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/menu" element={<Home />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
+                <Route path="/orders" element={<RequireAuth><Orders /></RequireAuth>} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/product/:id" element={<RequireAuth><ProductDetail /></RequireAuth>} />
 
-                <Route path="/admin" element={<AdminLayout><Dashboard /></AdminLayout>} />
-                <Route path="/admin/products" element={<AdminLayout><Products /></AdminLayout>} />
-                <Route path="/admin/orders" element={<AdminLayout><OrdersAdmin /></AdminLayout>} />
+                <Route path="/admin" element={<RequireAuth><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
+                <Route path="/admin/products" element={<RequireAuth><AdminLayout><Products /></AdminLayout></RequireAuth>} />
+                <Route path="/admin/orders" element={<RequireAuth><AdminLayout><OrdersAdmin /></AdminLayout></RequireAuth>} />
 
                 <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
 
           <Footer />
-          <WhatsAppButton phone="+15551234567" />
+          {/* show WhatsApp except on admin pages */}
+          <ShowWhatsApp />
           <LoginModalController />
         </div>
       </BrowserRouter>
       </CartProvider>
     </AuthProvider>
   );
+}
+
+function ShowWhatsApp() {
+  const location = useLocation();
+  if (location.pathname.startsWith("/admin")) return null;
+  return <WhatsAppButton phone="+15551234567" />;
 }

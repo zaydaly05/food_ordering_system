@@ -15,7 +15,7 @@ function Slider({ images }) {
     <div className="relative w-full h-72 md:h-96 overflow-hidden rounded-lg">
       <AnimatePresence>
         <motion.img
-          key={images[index]}
+          key={`${images[index]}-${index}`}
           src={images[index]}
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
@@ -29,7 +29,15 @@ function Slider({ images }) {
 }
 
 export default function Landing() {
-  const images = foods.map((f) => f.image);
+  const baseImages = foods.map((f) => f.image);
+  // add a few extra hero images and repeat the pattern to make the slider feel longer
+  const extraImages = [
+    "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=1",
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=2",
+    "https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=3",
+  ];
+
+  const images = [...baseImages, ...extraImages, ...baseImages];
 
   return (
     <main className="p-6 max-w-6xl mx-auto">
