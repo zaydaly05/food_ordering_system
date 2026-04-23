@@ -1,13 +1,61 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply bg-gray-50 text-gray-800 antialiased;
+	}
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer utilities {
+	.hero-animated {
+		background: linear-gradient(270deg, #ffedd5, #fff7ed, #fff1f2, #fff7ed);
+		background-size: 600% 600%;
+		animation: gradientBG 12s ease infinite;
+		border-radius: 0.5rem;
+	}
+
+	@keyframes gradientBG {
+		0% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+		100% { background-position: 0% 50%; }
+	}
+}
+
+/* Global animated background */
+@layer utilities {
+	.global-animated-bg {
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background: radial-gradient(circle at 10% 20%, rgba(255,159,67,0.08), transparent 8%), radial-gradient(circle at 80% 80%, rgba(99,102,241,0.06), transparent 15%), radial-gradient(circle at 50% 50%, rgba(34,197,94,0.04), transparent 30%);
+		mix-blend-mode: multiply;
+		backdrop-filter: blur(0px);
+		animation: globalMove 18s linear infinite;
+	}
+
+	.bg-blob {
+		position: absolute;
+		border-radius: 9999px;
+		filter: blur(36px);
+		opacity: 0.7;
+	}
+
+	.blob-1 { width: 360px; height: 360px; background: rgba(255,159,67,0.12); left: -80px; top: -40px; animation: floatY 6s ease-in-out infinite; }
+	.blob-2 { width: 420px; height: 420px; background: rgba(99,102,241,0.09); right: -120px; bottom: -40px; animation: floatY 8s ease-in-out infinite reverse; }
+	.blob-3 { width: 280px; height: 280px; background: rgba(34,197,94,0.06); left: 20%; bottom: 10%; animation: floatY 7s ease-in-out infinite; }
+
+	@keyframes floatY {
+		0% { transform: translateY(0) translateX(0); }
+		50% { transform: translateY(-18px) translateX(6px); }
+		100% { transform: translateY(0) translateX(0); }
+	}
+
+	@keyframes globalMove {
+		0% { transform: translate(0,0) scale(1); }
+		50% { transform: translate(-10px,8px) scale(1.02); }
+		100% { transform: translate(0,0) scale(1); }
+	}
 }
