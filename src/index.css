@@ -34,28 +34,53 @@
 		mix-blend-mode: multiply;
 		backdrop-filter: blur(0px);
 		animation: globalMove 18s linear infinite;
+
+		/* make animated gradient overlay for visibility */
+	}
+
+	.global-animated-bg::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(120deg, rgba(255,255,255,0.02), rgba(255,200,150,0.03), rgba(200,220,255,0.02));
+		background-size: 300% 300%;
+		animation: subtleShift 10s ease infinite;
+		pointer-events: none;
+		opacity: 1;
+	}
+
+	/* canvas for particle network */
+	.particle-canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		pointer-events: none;
 	}
 
 	.bg-blob {
 		position: absolute;
 		border-radius: 9999px;
-		filter: blur(36px);
-		opacity: 0.7;
+		filter: blur(24px);
+		opacity: 0.9;
 	}
 
-	.blob-1 { width: 360px; height: 360px; background: rgba(255,159,67,0.12); left: -80px; top: -40px; animation: floatY 6s ease-in-out infinite; }
-	.blob-2 { width: 420px; height: 420px; background: rgba(99,102,241,0.09); right: -120px; bottom: -40px; animation: floatY 8s ease-in-out infinite reverse; }
-	.blob-3 { width: 280px; height: 280px; background: rgba(34,197,94,0.06); left: 20%; bottom: 10%; animation: floatY 7s ease-in-out infinite; }
+	.blob-1 { width: 360px; height: 360px; background: rgba(255,159,67,0.12); left: -80px; top: -40px; }
+	.blob-2 { width: 420px; height: 420px; background: rgba(99,102,241,0.09); right: -120px; bottom: -40px; }
+	.blob-3 { width: 280px; height: 280px; background: rgba(34,197,94,0.06); left: 20%; bottom: 10%; }
 
-	@keyframes floatY {
-		0% { transform: translateY(0) translateX(0); }
-		50% { transform: translateY(-18px) translateX(6px); }
-		100% { transform: translateY(0) translateX(0); }
-	}
+	/* floatY keyframes are intentionally removed; Framer Motion handles blob transforms */
 
 	@keyframes globalMove {
 		0% { transform: translate(0,0) scale(1); }
 		50% { transform: translate(-10px,8px) scale(1.02); }
 		100% { transform: translate(0,0) scale(1); }
+	}
+
+	@keyframes subtleShift {
+		0% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+		100% { background-position: 0% 50%; }
 	}
 }
