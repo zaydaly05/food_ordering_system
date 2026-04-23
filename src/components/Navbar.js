@@ -1,13 +1,15 @@
-import { ShoppingCart, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ShoppingCart, Menu, X, Settings as SettingsIcon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 export default function Navbar({ setIsCartOpen }) {
   const [open, setOpen] = useState(false);
   const { cart } = useCart();
   const { user, logout, isLoggedIn, openLogin } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b">
@@ -21,13 +23,28 @@ export default function Navbar({ setIsCartOpen }) {
           <Link to="/orders" className="hover:text-orange-500">Orders</Link>
           <Link to="/checkout" className="hover:text-orange-500">Checkout</Link>
           {isLoggedIn ? (
-            <button onClick={logout} className="hover:text-orange-500">Sign out</button>
+            <>
+              <Link to="/profile" className="hover:text-orange-500">Profile</Link>
+              <Link to="/settings" className="hover:text-orange-500">Settings</Link>
+              <button onClick={() => { logout(); toast.success("Signed out"); navigate('/'); }} className="hover:text-orange-500">Sign out</button>
+            </>
           ) : (
             <button onClick={() => openLogin()} className="hover:text-orange-500">Login</button>
           )}
         </nav>
 
         <div className="flex items-center gap-4">
+          {isLoggedIn ? (
+            <button
+              aria-label="Settings"
+              onClick={() => navigate('/settings')}
+              className="text-gray-600 hover:text-orange-500"
+            >
+              <SettingsIcon />
+            </button>
+          ) : (
+            <button onClick={() => openLogin()} className="text-gray-600 hover:text-orange-500">Login / Signup</button>
+          )}
           <button
             className="relative"
             onClick={() => setIsCartOpen(true)}
@@ -51,7 +68,15 @@ export default function Navbar({ setIsCartOpen }) {
             <Link to="/menu" onClick={() => setOpen(false)}>Menu</Link>
             <Link to="/orders" onClick={() => setOpen(false)}>Orders</Link>
             <Link to="/checkout" onClick={() => setOpen(false)}>Checkout</Link>
-            <button onClick={() => { openLogin(); setOpen(false); }}>Login</button>
+            {isLoggedIn ? (
+              <>
+                <Link to="/profile" onClick={() => setOpen(false)}>Profile</Link>
+                <Link to="/settings" onClick={() => setOpen(false)}>Settings</Link>
+                <button onClick={() => { logout(); toast.success("Signed out"); setOpen(false); navigate('/'); }}>Sign out</button>
+              </>
+            ) : (
+              <button onClick={() => { openLogin(); setOpen(false); }}>Login</button>
+            )}
           </div>
         </div>
       )}

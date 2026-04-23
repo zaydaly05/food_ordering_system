@@ -84,3 +84,16 @@
 		100% { background-position: 0% 50%; }
 	}
 }
+
+/* Dark theme overrides (applies when <html> has class="dark") */
+@layer base {
+	.dark body {
+		@apply bg-slate-900 text-slate-100;
+	}
+
+	.dark .bg-white { @apply bg-slate-800; }
+	.dark .text-gray-600 { @apply text-slate-300; }
+	.dark .text-gray-500 { @apply text-slate-400; }
+	.dark .border { @apply border-slate-700; }
+	.dark .shadow { @apply shadow-black/30; }
+}

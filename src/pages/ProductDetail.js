@@ -3,11 +3,13 @@ import { foods } from "../data/foods";
 import { useCart } from "../context/CartContext";
 import toast from "react-hot-toast";
 import ImageWithFallback from "../components/ImageWithFallback";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const item = foods.find((f) => String(f.id) === String(id));
   const { addToCart } = useCart();
+  const { isLoggedIn, openLogin } = useAuth();
 
   if (!item) {
     return (
@@ -28,14 +30,34 @@ export default function ProductDetail() {
         <div className="mt-4 text-2xl font-extrabold text-orange-500">${item.price}</div>
 
         <div className="mt-6 flex gap-3">
-          <button
-            onClick={() => { addToCart(item); toast.success("Added to cart"); }}
-            className="bg-orange-500 text-white px-4 py-2 rounded"
-          >
-            Add to cart
-          </button>
+          {isLoggedIn ? (
+            <>
+              <button
+                onClick={() => { addToCart(item); toast.success("Added to cart"); }}
+                className="bg-orange-500 text-white px-4 py-2 rounded"
+              >
+                Add to cart
+              </button>
 
-          <Link to="/checkout" className="px-4 py-2 border rounded">Checkout</Link>
+              <Link to="/checkout" className="px-4 py-2 border rounded">Checkout</Link>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => { openLogin(); toast.error("Please log in to add items"); }}
+                className="bg-gray-200 text-gray-500 px-4 py-2 rounded"
+              >
+                Add to cart
+              </button>
+
+              <button
+                onClick={() => openLogin()}
+                className="px-4 py-2 border rounded text-gray-600"
+              >
+                Checkout
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

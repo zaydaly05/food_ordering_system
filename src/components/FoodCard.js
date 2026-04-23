@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function FoodCard({ food }) {
   const { addToCart } = useCart();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, openLogin } = useAuth();
 
   return (
     <motion.div
@@ -16,9 +16,19 @@ export default function FoodCard({ food }) {
       whileHover={{ scale: 1.05 }}
       className="bg-white rounded-xl shadow p-4"
     >
-      <Link to={`/product/${food.id}`}>
-        <ImageWithFallback src={food.image} alt={food.name} className="rounded-lg h-40 w-full object-cover" />
-      </Link>
+      {isLoggedIn ? (
+        <Link to={`/product/${food.id}`}>
+          <ImageWithFallback src={food.image} alt={food.name} className="rounded-lg h-40 w-full object-cover" />
+        </Link>
+      ) : (
+        <button
+          onClick={() => openLogin()}
+          className="w-full text-left p-0 bg-transparent border-0"
+          aria-label={`Preview ${food.name}. Please login to view details`}
+        >
+          <ImageWithFallback src={food.image} alt={food.name} className="rounded-lg h-40 w-full object-cover opacity-90 hover:opacity-100" />
+        </button>
+      )}
 
       <h2 className="mt-2 font-bold">{food.name}</h2>
       <p className="text-sm text-gray-500">{food.description}</p>

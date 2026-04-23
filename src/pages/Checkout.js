@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
 
 export default function Checkout() {
   const { cart, clearCart } = useCart();
@@ -11,6 +12,7 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("instapay");
   const [card, setCard] = useState({ number: "", name: "", exp: "", cvv: "" });
   const navigate = useNavigate();
+  const { isLoggedIn, openLogin } = useAuth();
 
   const subtotal = cart.reduce((s, it) => s + it.price, 0);
   const serviceFeeRate = 0.05; // 5%
@@ -30,6 +32,10 @@ export default function Checkout() {
   };
 
   const placeOrder = async () => {
+    if (!isLoggedIn) {
+      openLogin();
+      return;
+    }
     if (cart.length === 0) return toast.error("Your cart is empty");
     if (!address) return toast.error("Please enter an address");
 
