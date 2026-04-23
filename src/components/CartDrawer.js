@@ -1,7 +1,6 @@
 import { useCart } from "../context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function CartDrawer({ isOpen, setIsOpen }) {

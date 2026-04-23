@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 export default function Navbar({ setIsCartOpen }) {
   const [open, setOpen] = useState(false);
   const { cart } = useCart();
-  const { user, logout, isLoggedIn, openLogin } = useAuth();
+  const { logout, isLoggedIn, openLogin } = useAuth();
   const navigate = useNavigate();
 
   return (
