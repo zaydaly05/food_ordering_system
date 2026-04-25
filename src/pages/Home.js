@@ -1,13 +1,30 @@
+import { useEffect } from "react";
 import { foods } from "../data/foods";
 import FoodCard from "../components/FoodCard";
 import { motion } from "framer-motion";
 
 export default function Home() {
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/test")
+      .then((res) => res.text())
+      .then((data) => console.log("FROM BACKEND:", data))
+      .catch((err) => console.error("ERROR:", err));
+  }, []);
+
   return (
-    <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6">
+    <motion.main
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="p-6"
+    >
       <section className="max-w-6xl mx-auto mb-8 text-center">
-        <h1 className="text-4xl font-extrabold text-slate-900">Delicious food, delivered fast</h1>
-        <p className="mt-3 text-gray-600">Browse our menu and add your favorites to the cart.</p>
+        <h1 className="text-4xl font-extrabold text-slate-900">
+          Delicious food, delivered fast
+        </h1>
+        <p className="mt-3 text-gray-600">
+          Browse our menu and add your favorites to the cart.
+        </p>
       </section>
 
       <section className="max-w-6xl mx-auto">
