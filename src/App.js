@@ -23,6 +23,7 @@ import RequireAuth from "./components/RequireAuth";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./context/AuthContext";
+import { USER_ROLES } from "./context/AuthContext";
 import LoginModal from "./components/LoginModal";
 import { Toaster } from "react-hot-toast";
 import Footer from "./components/Footer";
@@ -51,18 +52,18 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/menu" element={<Home />} />
-                <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
-                <Route path="/orders" element={<RequireAuth><Orders /></RequireAuth>} />
+                <Route path="/checkout" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><Checkout /></RequireAuth>} />
+                <Route path="/orders" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><Orders /></RequireAuth>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/product/:id" element={<RequireAuth><ProductDetail /></RequireAuth>} />
+                <Route path="/product/:id" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><ProductDetail /></RequireAuth>} />
 
-                <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+                <Route path="/profile" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><Profile /></RequireAuth>} />
                 <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
 
-                <Route path="/admin" element={<AdminLayout><Dashboard /></AdminLayout>} />
-                <Route path="/admin/products" element={<AdminLayout><Products /></AdminLayout>} />
-                <Route path="/admin/orders" element={<AdminLayout><OrdersAdmin /></AdminLayout>} />
+                <Route path="/admin" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
+                <Route path="/admin/products" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Products /></AdminLayout></RequireAuth>} />
+                <Route path="/admin/orders" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><OrdersAdmin /></AdminLayout></RequireAuth>} />
 
                 <Route path="*" element={<NotFound />} />
             </Routes>

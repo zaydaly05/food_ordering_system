@@ -19,18 +19,26 @@ export default function LoginModal() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
-  const submitLogin = (e) => {
+  const submitLogin = async (e) => {
     e.preventDefault();
-    login({ email });
-    toast.success("Logged in");
-    closeLogin();
+    try {
+      await login({ email, password });
+      toast.success("Logged in");
+      closeLogin();
+    } catch (err) {
+      toast.error("Login failed. Please check backend and MongoDB.");
+    }
   };
 
-  const submitSignup = (e) => {
+  const submitSignup = async (e) => {
     e.preventDefault();
-    signup({ name, email, phone, address });
-    toast.success("Account created and signed in");
-    closeLogin();
+    try {
+      await signup({ name, email, password, phone, address });
+      toast.success("Account created and signed in");
+      closeLogin();
+    } catch (err) {
+      toast.error("Signup failed. Please check backend and MongoDB.");
+    }
   };
 
   return (
@@ -50,6 +58,9 @@ export default function LoginModal() {
 
               <button className="bg-orange-500 text-white py-2 rounded">Sign in</button>
             </form>
+            <p className="mt-3 text-xs text-gray-500">
+              Demo emails: <span className="font-medium">admin@foodapp.demo</span> or <span className="font-medium">customer@foodapp.demo</span>
+            </p>
 
             <div className="mt-3 text-sm">
               <span>Don't have an account? </span>
@@ -59,6 +70,7 @@ export default function LoginModal() {
         ) : (
           <>
             <h2 className="text-xl font-bold mb-4">Create Account</h2>
+            <p className="text-sm text-gray-600 mb-2">New accounts are created as Customer users.</p>
 
             <form onSubmit={submitSignup} className="flex flex-col gap-3">
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="border p-2" />

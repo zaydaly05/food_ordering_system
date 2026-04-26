@@ -4,6 +4,31 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 const USER_KEY = "demo_user";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+export const USER_ROLES = {
+  ADMIN: "ADMIN",
+  CUSTOMER: "CUSTOMER",
+};
+
+const DEMO_ADMIN = {
+  id: "admin-1",
+  name: "System Admin",
+  email: "admin@foodapp.demo",
+  role: USER_ROLES.ADMIN,
+  permissions: ["MANAGE_PRODUCTS", "MANAGE_ORDERS", "VIEW_REPORTS"],
+  preferences: { newsletter: false, defaultPayment: "instapay", theme: "light" },
+};
+
+const DEMO_CUSTOMER = {
+  id: "customer-1",
+  name: "Demo Customer",
+  email: "customer@foodapp.demo",
+  role: USER_ROLES.CUSTOMER,
+  phone: "",
+  address: "",
+  loyaltyPoints: 0,
+  preferences: { newsletter: true, defaultPayment: "instapay", theme: "light" },
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -26,33 +51,28 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {}
   };
 
-  const login = ({ email }) => {
-    // demo login: restore existing user or create minimal profile
-    let u = { email };
-    try {
-      const saved = JSON.parse(localStorage.getItem(USER_KEY) || "null");
-      if (saved && saved.email === email) u = saved;
-    } catch (e) {}
-    persistUser({
-      ...{
-        name: email.split("@")[0],
-        phone: "",
-        address: "",
-        preferences: { newsletter: true, defaultPayment: "instapay", theme: "light" },
-      },
-      ...u,
+  const login = async ({ email, password }) => {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
+    if (!response.ok) throw new Error("Login failed");
+    const backendUser = await response.json();
+    const inferredRole = backendUser?.role === USER_ROLES.ADMIN ? USER_ROLES.ADMIN : USER_ROLES.CUSTOMER;
+    const roleDefaults = inferredRole === USER_ROLES.ADMIN ? DEMO_ADMIN : DEMO_CUSTOMER;
+    persistUser({ ...roleDefaults, ...backendUser });
   };
 
-  const signup = ({ name, email, phone, address }) => {
-    const newUser = {
-      name: name || (email ? email.split("@")[0] : "user"),
-      email: email || "user@demo",
-      phone: phone || "",
-      address: address || "",
-      preferences: { newsletter: true, defaultPayment: "instapay", theme: "light" },
-    };
-    persistUser(newUser);
+  const signup = async ({ name, email, password, phone, address }) => {
+    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, phone, address }),
+    });
+    if (!response.ok) throw new Error("Signup failed");
+    const backendUser = await response.json();
+    persistUser({ ...DEMO_CUSTOMER, ...backendUser, role: USER_ROLES.CUSTOMER });
   };
 
   const logout = () => {
@@ -62,18 +82,41 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {}
   };
 
-  const updateProfile = (updates) => {
-    const next = { ...user, ...updates };
-    persistUser(next);
+  const updateProfile = async (updates) => {
+    if (!user?.id) {
+      const next = { ...user, ...updates };
+      persistUser(next);
+      return;
+    }
+    const response = await fetch(`${API_BASE_URL}/users/${user.id}/profile`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+    });
+    if (!response.ok) throw new Error("Profile update failed");
+    const backendUser = await response.json();
+    persistUser({ ...user, ...backendUser });
   };
 
-  const updatePreferences = (prefs) => {
-    const next = { ...user, preferences: { ...(user?.preferences || {}), ...prefs } };
-    persistUser(next);
+  const updatePreferences = async (prefs) => {
+    if (!user?.id) {
+      const next = { ...user, preferences: { ...(user?.preferences || {}), ...prefs } };
+      persistUser(next);
+      return;
+    }
+    const response = await fetch(`${API_BASE_URL}/users/${user.id}/preferences`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(prefs),
+    });
+    if (!response.ok) throw new Error("Preferences update failed");
+    const backendUser = await response.json();
+    persistUser({ ...user, ...backendUser });
   };
 
   const openLogin = (mode = "login") => { setLoginMode(mode); setShowLogin(true); };
   const closeLogin = () => setShowLogin(false);
+  const hasRole = (role) => user?.role === role;
 
   // apply theme (dark/class) to document root when preferences change
   useEffect(() => {
@@ -89,7 +132,7 @@ export const AuthProvider = ({ children }) => {
   }, [user?.preferences?.theme]);
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, updateProfile, updatePreferences, isLoggedIn: !!user, showLogin, loginMode, openLogin, closeLogin }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, updateProfile, updatePreferences, isLoggedIn: !!user, hasRole, showLogin, loginMode, openLogin, closeLogin }}>
       {children}
     </AuthContext.Provider>
   );

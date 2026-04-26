@@ -7,22 +7,33 @@ import toast from "react-hot-toast";
 export default function Settings() {
   const { user, updatePreferences } = useAuth();
   const prefs = user?.preferences || {};
+  const isAdmin = user?.role === "ADMIN";
 
   const [newsletter, setNewsletter] = useState(!!prefs.newsletter);
   const [defaultPayment, setDefaultPayment] = useState(prefs.defaultPayment || "instapay");
   const [theme, setTheme] = useState(prefs.theme || "light");
   const navigate = useNavigate();
 
-  const save = (e) => {
+  const save = async (e) => {
     e.preventDefault();
-    updatePreferences({ newsletter, defaultPayment, theme });
-    toast.success("Settings saved");
-    navigate('/');
+    try {
+      await updatePreferences({ newsletter, defaultPayment, theme });
+      toast.success("Settings saved");
+      navigate('/');
+    } catch (err) {
+      toast.error("Failed to save settings");
+    }
   };
 
   return (
     <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Settings</h1>
+      {isAdmin ? (
+        <div className="bg-blue-50 border border-blue-100 rounded p-3 mb-4 text-sm">
+          <p className="font-medium mb-1">Admin account</p>
+          <p>Permissions: {(user?.permissions || []).join(", ") || "No permissions set"}</p>
+        </div>
+      ) : null}
 
       <form onSubmit={save} className="bg-white rounded shadow p-4 flex flex-col gap-3">
         <label className="flex items-center gap-3">
