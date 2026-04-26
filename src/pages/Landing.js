@@ -30,41 +30,69 @@ function Slider({ images }) {
 
 export default function Landing() {
   const baseImages = foods.map((f) => f.image);
-  // add a few extra hero images and repeat the pattern to make the slider feel longer
+
   const extraImages = [
-    "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=1",
-    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=2",
-    "https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=3",
+    "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?q=80&w=1600&auto=format&fit=crop",
   ];
 
   const images = [...baseImages, ...extraImages, ...baseImages];
 
+  // 🔥 NEW: backend status
+  const [backendStatus, setBackendStatus] = React.useState("checking");
+
+  React.useEffect(() => {
+    fetch("http://localhost:8080/api/test")
+      .then((res) => res.text())
+      .then(() => setBackendStatus("online"))
+      .catch(() => setBackendStatus("offline"));
+  }, []);
+
   return (
     <main className="p-6 max-w-6xl mx-auto">
+
+      {/* 🔥 BACKEND STATUS BOX */}
+      <div className="mb-4 p-3 rounded text-center font-bold text-white">
+        {backendStatus === "online" && (
+          <div className="bg-green-500 p-2 rounded">🟢 Backend Connected</div>
+        )}
+
+        {backendStatus === "offline" && (
+          <div className="bg-red-500 p-2 rounded">🔴 Backend Not Connected</div>
+        )}
+
+        {backendStatus === "checking" && (
+          <div className="bg-gray-500 p-2 rounded">⏳ Checking Backend...</div>
+        )}
+      </div>
+
       <section className="hero-animated p-6 rounded-lg mb-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div className="p-4">
-            <h1 className="text-4xl font-extrabold text-slate-900">Welcome to FoodApp</h1>
-            <p className="mt-4 text-slate-800">Fresh, delicious meals prepared with care. Browse our menu and place orders quickly — sign in to order.</p>
+            <h1 className="text-4xl font-extrabold text-slate-900">
+              Welcome to FoodApp
+            </h1>
+            <p className="mt-4 text-slate-800">
+              Fresh, delicious meals prepared with care.
+            </p>
 
             <div className="mt-6 flex gap-3">
-              <Link to="/menu" className="bg-orange-500 text-white px-4 py-2 rounded">View Menu</Link>
-              <Link to="/about" className="px-4 py-2 border rounded"> About Us</Link>
+              <Link to="/menu" className="bg-orange-500 text-white px-4 py-2 rounded">
+                View Menu
+              </Link>
+              <Link to="/about" className="px-4 py-2 border rounded">
+                About Us
+              </Link>
             </div>
           </div>
 
           <div className="p-4">
-            <div className="bg-white/40 backdrop-blur-sm p-2 rounded shadow-sm">
-              <Slider images={images} />
-            </div>
+            <Slider images={images} />
           </div>
         </div>
       </section>
 
-      <section className="mt-4 bg-white p-6 rounded shadow">
-        <h2 className="text-2xl font-bold">Mission & Vision</h2>
-        <p className="mt-3 text-gray-600">Our mission is to connect people with great local food while supporting neighborhood kitchens. We deliver fresh, affordable meals quickly and sustainably. Our vision is to become the most trusted food delivery service, prioritizing quality, community, and convenience for every customer.</p>
-      </section>
     </main>
   );
 }
