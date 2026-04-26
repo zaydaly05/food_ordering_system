@@ -92,6 +92,12 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      <section className="text-center">
+        <h2 className="text-2xl font-bold mb-3">Why Choose Us?</h2>
+        <p className="text-gray-700 mb-6">
+          We use only the freshest ingredients, sourced locally whenever possible. Our chefs are passionate about creating delicious meals that satisfy every craving. With fast delivery and excellent customer service, we make ordering food easy and enjoyable.
+        </p>
+      </section>
 
     </main>
   );
