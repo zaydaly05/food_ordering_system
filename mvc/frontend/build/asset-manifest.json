@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bfc63588.css",
+    "main.js": "/static/js/main.b817c1ee.js",
+    "static/media/marg_pizza.png": "/static/media/marg_pizza.2717be98d7d464488396.png",
+    "static/media/classic burger.jpeg": "/static/media/classic burger.8274f6a10c18d3e919e3.jpeg",
+    "static/media/chicken_ceaser.jpeg": "/static/media/chicken_ceaser.355594fbbc636a41c043.jpeg",
+    "static/media/sushi.webp": "/static/media/sushi.c0f06fcbc256becad46a.webp",
+    "static/media/vegan.webp": "/static/media/vegan.a3e044786476795d4e65.webp",
+    "static/media/spicy.webp": "/static/media/spicy.b1bb537717163bc12f12.webp",
+    "static/media/cake.webp": "/static/media/cake.aff45426e5128c12c9d2.webp",
+    "static/media/pancake.webp": "/static/media/pancake.98534a217ccaeabcff39.webp",
+    "index.html": "/index.html",
+    "main.bfc63588.css.map": "/static/css/main.bfc63588.css.map",
+    "main.b817c1ee.js.map": "/static/js/main.b817c1ee.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bfc63588.css",
+    "static/js/main.b817c1ee.js"
+  ]
+}
