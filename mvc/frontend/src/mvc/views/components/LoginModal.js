@@ -15,6 +15,8 @@ export default function LoginModal() {
   const [password, setPassword] = useState("");
 
   // signup fields
+  
+  
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -75,6 +77,7 @@ export default function LoginModal() {
             <form onSubmit={submitSignup} className="flex flex-col gap-3">
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="border p-2" />
               <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="border p-2" />
+              <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" className="border p-2" />
               <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone" className="border p-2" />
               <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Address" className="border p-2" />
 

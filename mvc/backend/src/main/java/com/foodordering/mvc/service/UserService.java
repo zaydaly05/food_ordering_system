@@ -1,7 +1,10 @@
 package com.foodordering.mvc.service;
 
 import com.foodordering.mvc.repository.UserRepository;
+import com.foodordering.mvc.notification.EmailService;
 import com.foodordering.mvc.persistence.UserDocument;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,30 +19,58 @@ public class UserService {
     private static final List<String> ADMIN_PERMISSIONS = List.of("MANAGE_PRODUCTS", "MANAGE_ORDERS", "VIEW_REPORTS");
 
     private final UserRepository userRepository;
+    @Autowired
+    private EmailService emailService;
+
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     public UserDocument login(String email, String password) {
-        String normalizedEmail = normalizeEmail(email);
-        Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
-        if (existing.isPresent()) {
-            return existing.get();
-        }
+    String normalizedEmail = normalizeEmail(email);
 
-        if (ADMIN_EMAIL.equals(normalizedEmail)) {
-            return userRepository.save(buildAdminUser());
-        }
+    UserDocument user = userRepository.findByEmail(normalizedEmail)
+        .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return userRepository.save(buildCustomerUser(normalizedEmail, password, null, null, null));
+    if (!password.equals(user.getPassword())) {
+        throw new RuntimeException("Invalid password");
     }
 
-    public UserDocument signup(String name, String email, String password, String phone, String address) {
-        String normalizedEmail = normalizeEmail(email);
-        return userRepository.findByEmail(normalizedEmail).orElseGet(() ->
-                userRepository.save(buildCustomerUser(normalizedEmail, password, name, phone, address)));
+    try {
+        emailService.sendWelcomeEmail(user.getEmail());
+        System.out.println("Email sent to: " + user.getEmail());
+    } catch (Exception e) {
+        System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
     }
+    return user;
+}
+
+
+   public UserDocument signup(String name, String email, String password, String phone, String address) {
+
+    String normalizedEmail = normalizeEmail(email);
+
+    Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
+
+    if (existing.isPresent()) {
+        return existing.get(); 
+    }
+
+    UserDocument user = userRepository.save(
+            buildCustomerUser(normalizedEmail, password, name, phone, address)
+    );
+
+    try {
+        emailService.sendWelcomeEmail(user.getEmail());
+        System.out.println("Email sent to: " + user.getEmail());
+    } catch (Exception e) {
+        System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
+    }
+
+    return user;
+}
+
 
     public Optional<UserDocument> updateProfile(String id, String name, String phone, String address) {
         Optional<UserDocument> userOpt = userRepository.findById(id);
