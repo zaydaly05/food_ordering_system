@@ -18,7 +18,7 @@ public class EmailService {
 
     message.setText(
         "Hello ,\n\n" +
-        "Welcome back to our Food Ordering System 🍔\n" +
+        "Welcome back to our Food Ordering System \n" +
         "We're glad to see you again!\n\n" +
         "Enjoy your experience.\n\n" +
         "Best regards,\nFood Ordering Team"
