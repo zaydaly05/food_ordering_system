@@ -7,5 +7,8 @@
     "frontend:test": "npm --prefix mvc/frontend test",
     "backend:run": "cd mvc/backend && mvnw.cmd spring-boot:run",
     "backend:build": "cd mvc/backend && mvnw.cmd -DskipTests package"
+  },
+  "dependencies": {
+    "framer-motion": "^12.38.0"
   }
 }
