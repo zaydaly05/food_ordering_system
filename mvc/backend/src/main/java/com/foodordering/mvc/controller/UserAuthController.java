@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+
 
 import java.util.Map;
 import java.util.Optional;
@@ -19,16 +21,27 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class UserAuthController {
     private final UserService userService;
+     
+    
 
-    public UserAuthController(UserService userService) {
+    public UserAuthController(UserService userService ) {
         this.userService = userService;
+      
     }
+
+   
 
     @PostMapping("/auth/login")
-    public ResponseEntity<UserDocument> login(@RequestBody LoginRequest request) {
-        UserDocument user = userService.login(request.email(), request.password());
-        return ResponseEntity.ok(user);
-    }
+public ResponseEntity<UserDocument> login(@RequestBody LoginRequest request) {
+
+    UserDocument user = userService.login(
+            request.email(),
+            request.password()
+    );
+
+    return ResponseEntity.ok(user);
+}
+
 
     @PostMapping("/auth/signup")
     public ResponseEntity<UserDocument> signup(@RequestBody SignupRequest request) {

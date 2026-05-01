@@ -52,28 +52,48 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async ({ email, password }) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) throw new Error("Login failed");
-    const backendUser = await response.json();
-    const inferredRole = backendUser?.role === USER_ROLES.ADMIN ? USER_ROLES.ADMIN : USER_ROLES.CUSTOMER;
-    const roleDefaults = inferredRole === USER_ROLES.ADMIN ? DEMO_ADMIN : DEMO_CUSTOMER;
-    persistUser({ ...roleDefaults, ...backendUser });
-  };
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    credentials: "include", // 👈 IMPORTANT
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) throw new Error("Login failed");
+
+  const backendUser = await response.json();
+
+  const inferredRole =
+    backendUser?.role === USER_ROLES.ADMIN
+      ? USER_ROLES.ADMIN
+      : USER_ROLES.CUSTOMER;
+
+  const roleDefaults =
+    inferredRole === USER_ROLES.ADMIN ? DEMO_ADMIN : DEMO_CUSTOMER;
+
+  persistUser({ ...roleDefaults, ...backendUser });
+};
+
 
   const signup = async ({ name, email, password, phone, address }) => {
-    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, phone, address }),
-    });
-    if (!response.ok) throw new Error("Signup failed");
-    const backendUser = await response.json();
-    persistUser({ ...DEMO_CUSTOMER, ...backendUser, role: USER_ROLES.CUSTOMER });
-  };
+  const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+    method: "POST",
+    credentials: "include", // 👈 IMPORTANT
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password, phone, address }),
+  });
+
+  if (!response.ok) throw new Error("Signup failed");
+
+  const backendUser = await response.json();
+
+  persistUser({
+    ...DEMO_CUSTOMER,
+    ...backendUser,
+    role: USER_ROLES.CUSTOMER,
+  });
+};
+
 
   const logout = () => {
     setUser(null);

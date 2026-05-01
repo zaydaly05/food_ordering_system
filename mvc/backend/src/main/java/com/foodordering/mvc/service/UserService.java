@@ -5,6 +5,7 @@ import com.foodordering.mvc.notification.EmailService;
 import com.foodordering.mvc.persistence.UserDocument;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    private final PasswordEncoder passwordEncoder;
+
     private static final String ADMIN_EMAIL = "admin@foodapp.demo";
     private static final List<String> ADMIN_PERMISSIONS = List.of("MANAGE_PRODUCTS", "MANAGE_ORDERS", "VIEW_REPORTS");
 
@@ -23,28 +26,34 @@ public class UserService {
     private EmailService emailService;
 
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDocument login(String email, String password) {
+
+    System.out.println("RAW EMAIL: " + email);
+
     String normalizedEmail = normalizeEmail(email);
+    System.out.println("NORMALIZED EMAIL: " + normalizedEmail);
 
     UserDocument user = userRepository.findByEmail(normalizedEmail)
-        .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-    if (!password.equals(user.getPassword())) {
+    System.out.println("USER FOUND: " + user.getEmail());
+
+    boolean match = passwordEncoder.matches(password, user.getPassword());
+
+    System.out.println("PASSWORD MATCH: " + match);
+
+    if (!match) {
         throw new RuntimeException("Invalid password");
     }
 
-    try {
-        emailService.sendWelcomeEmail(user.getEmail());
-        System.out.println("Email sent to: " + user.getEmail());
-    } catch (Exception e) {
-        System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
-    }
     return user;
 }
+
 
 
    public UserDocument signup(String name, String email, String password, String phone, String address) {
@@ -56,9 +65,10 @@ public class UserService {
     if (existing.isPresent()) {
         return existing.get(); 
     }
+     String encodedPassword = passwordEncoder.encode(password);
 
     UserDocument user = userRepository.save(
-            buildCustomerUser(normalizedEmail, password, name, phone, address)
+            buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address)
     );
 
     try {
