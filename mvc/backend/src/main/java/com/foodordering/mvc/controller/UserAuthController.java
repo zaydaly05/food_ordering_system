@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -66,6 +65,32 @@ public class UserAuthController {
         Optional<UserDocument> updated = userService.updatePreferences(id, preferences);
         return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userMapper.toResponseList(adminUserService.getAllUsers()));
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<UserResponse> updateUserByAdmin(@PathVariable String id, @RequestBody UpdateUserRequest request) {
+        UserDocument updated = adminUserService.updateUserByAdmin(
+                id,
+                request.name(),
+                request.email(),
+                request.phone(),
+                request.address(),
+                request.role(),
+                request.password()
+        );
+        return ResponseEntity.ok(userMapper.toResponse(updated));
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUserByAdmin(@PathVariable String id) {
+        adminUserService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
     public record LoginRequest(@Email @NotBlank String email, String password) {
     }
