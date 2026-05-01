@@ -3,13 +3,9 @@ import com.foodordering.mvc.DTO.CreateOrderRequest;
 import com.foodordering.mvc.model.Order;
 import com.foodordering.mvc.model.Order.OrderStatus;
 import com.foodordering.mvc.service.OrderService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 
@@ -21,14 +17,11 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-public ResponseEntity<Order> create(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<Order> create(@RequestBody CreateOrderRequest request) {
 
-    String userId = SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getName();
+        return ResponseEntity.ok(orderService.createOrder(request));
+    }
 
-    return ResponseEntity.ok(orderService.createOrder(request, userId));
-}
 
 
     @GetMapping("/user/{userId}")

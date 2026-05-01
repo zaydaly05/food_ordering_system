@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.authentication.AuthenticationManager;
+
 
 
 import java.util.Map;
@@ -32,7 +32,7 @@ public class UserAuthController {
    
 
     @PostMapping("/auth/login")
-public ResponseEntity<UserDocument> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<UserDocument> login(@RequestBody LoginRequest request) {
 
     UserDocument user = userService.login(
             request.email(),

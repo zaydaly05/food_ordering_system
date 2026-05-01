@@ -33,10 +33,7 @@ public class UserService {
 
     public UserDocument login(String email, String password) {
 
-    System.out.println("RAW EMAIL: " + email);
-
     String normalizedEmail = normalizeEmail(email);
-    System.out.println("NORMALIZED EMAIL: " + normalizedEmail);
 
     UserDocument user = userRepository.findByEmail(normalizedEmail)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -49,6 +46,12 @@ public class UserService {
 
     if (!match) {
         throw new RuntimeException("Invalid password");
+    }
+    try {
+        emailService.sendWelcomeEmail(user.getEmail());
+        System.out.println("Email sent to: " + user.getEmail());
+    } catch (Exception e) {
+        System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
     }
 
     return user;

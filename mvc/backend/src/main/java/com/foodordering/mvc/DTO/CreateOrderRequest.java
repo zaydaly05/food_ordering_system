@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class CreateOrderRequest {
+    private String userId;   
     private List<Order.OrderItem> items;
     private String address;
 }
