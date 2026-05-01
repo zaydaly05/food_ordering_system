@@ -64,6 +64,7 @@ export default function App() {
                 <Route path="/admin" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
                 <Route path="/admin/products" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Products /></AdminLayout></RequireAuth>} />
                 <Route path="/admin/orders" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><OrdersAdmin /></AdminLayout></RequireAuth>} />
+                <Route path="/admin/users" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Dashboard view="users" /></AdminLayout></RequireAuth>} />
 
                 <Route path="*" element={<NotFound />} />
             </Routes>

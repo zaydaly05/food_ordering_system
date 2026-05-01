@@ -122,6 +122,63 @@ public class UserService {
         return Optional.of(userRepository.save(user));
     }
 
+    public List<UserDocument> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public UserDocument createUserByAdmin(String name, String email, String phone, String address, String role, String password) {
+        String normalizedEmail = normalizeEmail(email);
+        Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
+        if (existing.isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+        if (password == null || password.isBlank()) {
+            throw new RuntimeException("Password is required");
+        }
+
+        String encodedPassword = passwordEncoder.encode(password.trim());
+        UserDocument user = buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address);
+        applyRoleDefaults(user, role);
+        return userRepository.save(user);
+    }
+
+    public UserDocument updateUserByAdmin(String id, String name, String email, String phone, String address, String role, String password) {
+        UserDocument user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (email != null && !email.isBlank()) {
+            String normalizedEmail = normalizeEmail(email);
+            Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
+            if (existing.isPresent() && !existing.get().getId().equals(id)) {
+                throw new RuntimeException("Email already exists");
+            }
+            user.setEmail(normalizedEmail);
+        }
+        if (name != null) {
+            user.setName(name);
+        }
+        if (phone != null) {
+            user.setPhone(phone);
+        }
+        if (address != null) {
+            user.setAddress(address);
+        }
+        if (password != null && !password.isBlank()) {
+            user.setPassword(passwordEncoder.encode(password.trim()));
+        }
+        if (role != null && !role.isBlank()) {
+            applyRoleDefaults(user, role);
+        }
+        return userRepository.save(user);
+    }
+
+    public void deleteUserById(String id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+        userRepository.deleteById(id);
+    }
+
     private UserDocument buildAdminUser() {
         UserDocument user = new UserDocument();
         user.setName("System Admin");
@@ -143,6 +200,23 @@ public class UserService {
         user.setLoyaltyPoints(0);
         user.setPreferences(defaultCustomerPreferences());
         return user;
+    }
+
+    private void applyRoleDefaults(UserDocument user, String role) {
+        String normalizedRole = role == null ? "CUSTOMER" : role.trim().toUpperCase(Locale.ROOT);
+        if ("ADMIN".equals(normalizedRole)) {
+            user.setRole("ADMIN");
+            user.setPermissions(ADMIN_PERMISSIONS);
+            if (user.getPreferences() == null || user.getPreferences().isEmpty()) {
+                user.setPreferences(defaultAdminPreferences());
+            }
+        } else {
+            user.setRole("CUSTOMER");
+            user.setPermissions(List.of());
+            if (user.getPreferences() == null || user.getPreferences().isEmpty()) {
+                user.setPreferences(defaultCustomerPreferences());
+            }
+        }
     }
 
     private Map<String, Object> defaultAdminPreferences() {

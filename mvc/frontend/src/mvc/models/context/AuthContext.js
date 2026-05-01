@@ -138,6 +138,64 @@ export const AuthProvider = ({ children }) => {
   const closeLogin = () => setShowLogin(false);
   const hasRole = (role) => user?.role === role;
 
+  const getAllUsers = async () => {
+    const response = await fetch(`${API_BASE_URL}/users`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) throw new Error("Failed to fetch users");
+    const users = await response.json();
+    return Array.isArray(users) ? users : [];
+  };
+
+  const createUserByAdmin = async (payload) => {
+    const response = await fetch(`${API_BASE_URL}/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      let message = "Failed to create user";
+      try {
+        const errorText = await response.text();
+        if (errorText) message = errorText;
+      } catch (e) {}
+      throw new Error(message);
+    }
+    return response.json();
+  };
+
+  const updateUserById = async (id, updates) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+    });
+    if (!response.ok) {
+      let message = "Failed to update user";
+      try {
+        const errorText = await response.text();
+        if (errorText) message = errorText;
+      } catch (e) {}
+      throw new Error(message);
+    }
+    const updatedUser = await response.json();
+    if (String(user?.id) === String(updatedUser?.id)) {
+      persistUser({ ...user, ...updatedUser });
+    }
+    return updatedUser;
+  };
+
+  const deleteUserById = async (id) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete user");
+    if (String(user?.id) === String(id)) {
+      logout();
+    }
+  };
+
   // apply theme (dark/class) to document root when preferences change
   useEffect(() => {
     try {
@@ -152,7 +210,7 @@ export const AuthProvider = ({ children }) => {
   }, [user?.preferences?.theme]);
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, updateProfile, updatePreferences, isLoggedIn: !!user, hasRole, showLogin, loginMode, openLogin, closeLogin }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, updateProfile, updatePreferences, isLoggedIn: !!user, hasRole, showLogin, loginMode, openLogin, closeLogin, getAllUsers, createUserByAdmin, updateUserById, deleteUserById }}>
       {children}
     </AuthContext.Provider>
   );
