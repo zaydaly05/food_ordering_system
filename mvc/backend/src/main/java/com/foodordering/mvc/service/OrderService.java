@@ -1,5 +1,6 @@
 package com.foodordering.mvc.service;
 import com.foodordering.mvc.model.Order;
+import com.foodordering.mvc.persistence.UserDocument;
 import com.foodordering.mvc.repository.OrderRepository;
 import com.foodordering.mvc.DTO.CreateOrderRequest;
 import org.springframework.stereotype.Service;
@@ -16,22 +17,25 @@ public class OrderService {
 
     public Order createOrder(CreateOrderRequest request) {
 
-    double total = request.getItems()
-            .stream()
-            .mapToDouble(i -> i.getPrice() * i.getQuantity())
-            .sum();
+        double total = request.getItems()
+                .stream()
+                .mapToDouble(i -> i.getPrice() * i.getQuantity())
+                .sum();
 
-    Order order = Order.builder()
-            .userId(request.getUserId())   // 👈 FIX HERE
-            .items(request.getItems())
-            .totalPrice(total)
-            .status(Order.OrderStatus.PENDING)
-            .address(request.getAddress())
-            .createdAt(LocalDateTime.now())
-            .build();
+        Order order = Order.builder()
+                .userId(request.getUserId())   // 👈 FIX HERE
+                .items(request.getItems())
+                .totalPrice(total)
+                .status(Order.OrderStatus.PENDING)
+                .address(request.getAddress())
+                .createdAt(LocalDateTime.now())
+                .build();
 
-    return orderRepository.save(order);
-}
+        return orderRepository.save(order);
+    }
+     public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
 
 
     public List<Order> getUserOrders(String userId) {

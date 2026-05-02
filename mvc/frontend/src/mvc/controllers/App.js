@@ -17,12 +17,14 @@ import Settings from "../views/pages/Settings";
 import Dashboard from "../views/pages/admin/Dashboard";
 import Products from "../views/pages/admin/Products";
 import OrdersAdmin from "../views/pages/admin/OrdersAdmin";
+import Users from "../views/pages/admin/Users";
 import AdminLayout from "../views/layouts/AdminLayout";
 import RequireAuth from "../views/components/RequireAuth";
 
 import { CartProvider } from "../models/context/CartContext";
 import { AuthProvider } from "../models/context/AuthContext";
 import { useAuth } from "../models/context/AuthContext";
+import { OrdersProvider } from "../models/context/OrdersContext";
 import { USER_ROLES } from "../models/context/AuthContext";
 import LoginModal from "../views/components/LoginModal";
 import { Toaster } from "react-hot-toast";
@@ -40,8 +42,10 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <CartProvider>
+  <OrdersProvider>
+    <CartProvider>
       <BrowserRouter>
+
         <div className="min-h-screen flex flex-col relative z-10">
           <AnimatedBackground />
           <Navbar setIsCartOpen={setIsCartOpen} />
@@ -64,7 +68,7 @@ export default function App() {
                 <Route path="/admin" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
                 <Route path="/admin/products" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Products /></AdminLayout></RequireAuth>} />
                 <Route path="/admin/orders" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><OrdersAdmin /></AdminLayout></RequireAuth>} />
-                <Route path="/admin/users" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Dashboard view="users" /></AdminLayout></RequireAuth>} />
+                <Route path="/admin/users" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Users /></AdminLayout></RequireAuth>} />
 
                 <Route path="*" element={<NotFound />} />
             </Routes>
@@ -75,9 +79,11 @@ export default function App() {
           <ShowWhatsApp />
           <LoginModalController />
         </div>
-      </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+            </BrowserRouter>
+    </CartProvider>
+  </OrdersProvider>
+</AuthProvider>
+
   );
 }
 
