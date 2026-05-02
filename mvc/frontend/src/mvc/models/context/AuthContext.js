@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [loginMode, setLoginMode] = useState("login");
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
   useEffect(() => {
     try {
@@ -41,6 +42,8 @@ export const AuthProvider = ({ children }) => {
       if (raw) setUser(JSON.parse(raw));
     } catch (e) {
       // ignore
+    } finally {
+      setIsAuthReady(true);
     }
   }, []);
 
@@ -210,7 +213,7 @@ export const AuthProvider = ({ children }) => {
   }, [user?.preferences?.theme]);
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, updateProfile, updatePreferences, isLoggedIn: !!user, hasRole, showLogin, loginMode, openLogin, closeLogin, getAllUsers, createUserByAdmin, updateUserById, deleteUserById }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, updateProfile, updatePreferences, isLoggedIn: !!user, isAuthReady, hasRole, showLogin, loginMode, openLogin, closeLogin, getAllUsers, createUserByAdmin, updateUserById, deleteUserById }}>
       {children}
     </AuthContext.Provider>
   );

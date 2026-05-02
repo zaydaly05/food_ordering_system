@@ -3,13 +3,15 @@ import { useAuth } from "../../models/context/AuthContext";
 import { useLocation, Navigate } from "react-router-dom";
 
 export default function RequireAuth({ children, allowedRoles }) {
-  const { isLoggedIn, openLogin, user } = useAuth();
+  const { isLoggedIn, isAuthReady, openLogin, user } = useAuth();
   const location = useLocation();
   const roleBlocked = Array.isArray(allowedRoles) && allowedRoles.length > 0 && !allowedRoles.includes(user?.role);
 
   useEffect(() => {
-    if (!isLoggedIn) openLogin();
-  }, [isLoggedIn, openLogin]);
+    if (isAuthReady && !isLoggedIn) openLogin();
+  }, [isAuthReady, isLoggedIn, openLogin]);
+
+  if (!isAuthReady) return null;
 
   if (isLoggedIn && !roleBlocked) return children;
   if (isLoggedIn && roleBlocked) {
