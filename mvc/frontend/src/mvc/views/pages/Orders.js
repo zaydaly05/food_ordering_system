@@ -1,13 +1,33 @@
 import { useEffect, useState } from "react";
+import { useOrders } from "../../models/context/OrdersContext";
+import { useAuth } from "../../models/context/AuthContext"; // adjust path if needed
 
 export default function Orders() {
-	const [orders, setOrders] = useState([]);
+  const { getUserOrders } = useOrders();
+  const { user, isAuthReady } = useAuth();
 
-	useEffect(() => {
-		// For demo we pull orders from localStorage if present
-		const saved = localStorage.getItem("demo_orders");
-		if (saved) setOrders(JSON.parse(saved));
-	}, []);
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        console.log("USER ID:", user?.id);
+
+        const data = await getUserOrders(user.id);
+        console.log("ORDERS:", data);
+
+        setOrders(data);
+      } catch (err) {
+        console.error("ERROR:", err);
+      }
+    };
+
+    if (!isAuthReady) return;
+    if (!user?.id) return;
+
+    fetchOrders();
+  }, [isAuthReady, user?.id, getUserOrders]);
+
 
 	if (orders.length === 0) {
 		return (
@@ -23,28 +43,32 @@ export default function Orders() {
 			<h1 className="text-2xl font-bold mb-4">Your Orders</h1>
 
 			<div className="flex flex-col gap-4">
-				{orders.map((o, i) => (
-					<div key={i} className="p-4 border rounded bg-white">
+				{orders.map((o) => (
+					<div key={o.id} className="p-4 border rounded bg-white">
 						<div className="flex justify-between">
 							<div>
-								<div className="font-bold">Order #{o.id}</div>
-								<div className="text-sm text-gray-500">{o.date}</div>
+								<div className="font-bold">
+									Order #{o.id?.slice(-6)}
+								</div>
+								<div className="text-sm text-gray-500">
+									{o.createdAt
+										? new Date(o.createdAt).toLocaleString()
+										: ""}
+								</div>
 							</div>
 
 							<div className="text-right">
-								<div className="text-right">
-									<div className="font-bold text-orange-500">${o.total}</div>
-									<div className="text-sm text-gray-600">{o.paymentMethod ? o.paymentMethod.toUpperCase() : "--"} • {o.paymentStatus || "--"}</div>
-									<div className="text-sm text-gray-600">Subtotal: ${o.subtotal?.toFixed(2) ?? "--"}</div>
-									<div className="text-sm text-gray-600">Service: ${o.serviceFee?.toFixed(2) ?? "--"}</div>
-									<div className="text-sm text-gray-600">VAT: ${o.vat?.toFixed(2) ?? "--"}</div>
-									{o.deliveryFee ? <div className="text-sm text-gray-600">Delivery: ${o.deliveryFee.toFixed(2)}</div> : null}
+								<div className="font-bold text-orange-500">
+									${o.totalPrice}
+								</div>
+								<div className="text-sm text-gray-600">
+									{o.status}
 								</div>
 							</div>
 						</div>
 
 						<div className="mt-3 text-sm">
-							{o.items.map((it, idx) => (
+							{o.items?.map((it, idx) => (
 								<div key={idx} className="flex justify-between">
 									<span>{it.name}</span>
 									<span>${it.price}</span>

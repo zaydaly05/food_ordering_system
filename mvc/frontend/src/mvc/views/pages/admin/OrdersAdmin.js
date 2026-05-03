@@ -3,8 +3,9 @@ import toast from "react-hot-toast";
 import { useOrders } from "../../../models/context/OrdersContext.js";
 
 export default function OrdersAdmin() {
-  const { getAllOrders } = useOrders();
+  const { getAllOrders, UpdateOrderStatus } = useOrders();
   const [orders, setOrders] = useState([]);
+  const [savingOrderId, setSavingOrderId] = useState(null);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -18,6 +19,23 @@ export default function OrdersAdmin() {
 
     loadOrders();
   }, [getAllOrders]);
+
+  const changeStatus = async (orderId, newStatus) => {
+    try {
+      setSavingOrderId(orderId);
+      await UpdateOrderStatus(orderId, newStatus);
+      setOrders((prev) =>
+        prev.map((o) =>
+          String(o.id) === String(orderId) ? { ...o, status: newStatus } : o
+        )
+      );
+      toast.success("Order status updated");
+    } catch (err) {
+      toast.error("Failed to update order status");
+    } finally {
+      setSavingOrderId(null);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -38,11 +56,24 @@ export default function OrdersAdmin() {
                   <h2 className="font-bold text-lg text-gray-800">
                     Order #{o.id?.slice(-8)}
                   </h2>
+
                   <p className="text-sm text-gray-500">
                     {o.createdAt
                       ? new Date(o.createdAt).toLocaleString()
                       : "No date"}
                   </p>
+
+                  {/* 👇 USER INFO ADDED HERE */}
+                  <div className="mt-2 text-sm text-gray-600">
+                    <p>
+                      <span className="font-medium">Customer:</span>{" "}
+                      {o.userName || "Unknown"}
+                    </p>
+                    <p>
+                      <span className="font-medium">Phone:</span>{" "}
+                      {o.phone || "No phone"}
+                    </p>
+                  </div>
                 </div>
 
                 <span
@@ -57,6 +88,7 @@ export default function OrdersAdmin() {
                   {o.status}
                 </span>
               </div>
+
 
               {/* Items */}
               <div className="space-y-2 mb-4">
@@ -75,7 +107,8 @@ export default function OrdersAdmin() {
                 ))}
               </div>
 
-              {/* Footer */}
+              
+                {/* Footer */}
               <div className="flex justify-between items-center pt-3 border-t">
                 <div>
                   <p className="text-sm text-gray-500">Address</p>
@@ -84,14 +117,32 @@ export default function OrdersAdmin() {
                   </p>
                 </div>
 
-                <div className="text-right">
-                  <p className="text-sm text-gray-500">Total</p>
-                  <p className="text-xl font-bold text-orange-500">
-                    ${o.totalPrice?.toFixed(2)}
-                  </p>
+                <div className="flex flex-col items-end gap-2">
+                  <div className="text-right">
+                    <p className="text-sm text-gray-500">Total</p>
+                    <p className="text-xl font-bold text-orange-500">
+                      ${o.totalPrice?.toFixed(2)}
+                    </p>
+                  </div>
+
+                  <select
+                    value={o.status}
+                    disabled={savingOrderId === o.id}
+                    onChange={(e) => changeStatus(o.id, e.target.value)}
+                    className="border rounded-lg px-3 py-2 text-sm"
+                  >
+                    <option value="PENDING">PENDING</option>
+                    <option value="CONFIRMED">CONFIRMED</option>
+                    <option value="PREPARING">PREPARING</option>
+                    <option value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</option>
+                    <option value="DELIVERED">DELIVERED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                   
+                  </select>
                 </div>
               </div>
             </div>
+
           ))}
         </div>
       )}

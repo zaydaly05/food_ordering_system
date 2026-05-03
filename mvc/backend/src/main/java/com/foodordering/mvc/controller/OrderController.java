@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -24,9 +25,10 @@ public class OrderController {
     }
 
     @GetMapping("/all/orders")
-        public ResponseEntity<List<Order>> getAllOrders() {
-            return ResponseEntity.ok(orderService.getAllOrders());
-        }
+        public List<Map<String, Object>> getAllOrders() {
+        return orderService.getAllOrdersWithUsers();
+    }
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getUserOrders(@PathVariable String userId) {

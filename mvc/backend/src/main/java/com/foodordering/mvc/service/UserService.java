@@ -25,11 +25,12 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
-
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
+    
 
     public UserDocument login(String email, String password) {
 

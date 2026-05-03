@@ -34,7 +34,6 @@ import WhatsAppButton from "../views/components/WhatsAppButton";
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // showLogin is provided by AuthProvider below; create a small wrapper to access it
   function LoginModalController() {
     const { showLogin } = useAuth();
     return showLogin ? <LoginModal /> : null;
@@ -42,50 +41,106 @@ export default function App() {
 
   return (
     <AuthProvider>
-  <OrdersProvider>
-    <CartProvider>
-      <BrowserRouter>
+      <OrdersProvider>
+        <CartProvider>
+          <BrowserRouter>
 
-        <div className="min-h-screen flex flex-col relative z-10">
-          <AnimatedBackground />
-          <Navbar setIsCartOpen={setIsCartOpen} />
-          <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
-          <Toaster />
+            <div className="min-h-screen flex flex-col relative z-10">
+              <AnimatedBackground />
+              <Navbar setIsCartOpen={setIsCartOpen} />
+              <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
+              <Toaster />
 
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/menu" element={<Home />} />
-                <Route path="/checkout" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><Checkout /></RequireAuth>} />
-                <Route path="/orders" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><Orders /></RequireAuth>} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/product/:id" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><ProductDetail /></RequireAuth>} />
+              <main className="flex-1">
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/menu" element={<Home />} />
 
-                <Route path="/profile" element={<RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}><Profile /></RequireAuth>} />
-                <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
+                  <Route
+                    path="/checkout"
+                    element={
+                      <RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}>
+                        <Checkout />
+                      </RequireAuth>
+                    }
+                  />
 
-                <Route path="/admin" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
-                <Route path="/admin/products" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Products /></AdminLayout></RequireAuth>} />
-                <Route path="/admin/orders" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><OrdersAdmin /></AdminLayout></RequireAuth>} />
-                <Route path="/admin/users" element={<RequireAuth allowedRoles={[USER_ROLES.ADMIN]}><AdminLayout><Users /></AdminLayout></RequireAuth>} />
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/about" element={<About />} />
 
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
+                  <Route
+                    path="/product/:id"
+                    element={
+                      <RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}>
+                        <ProductDetail />
+                      </RequireAuth>
+                    }
+                  />
 
-          <Footer />
-          {/* show WhatsApp except on admin pages */}
-          <ShowWhatsApp />
-          <LoginModalController />
-        </div>
-            </BrowserRouter>
-    </CartProvider>
-  </OrdersProvider>
-</AuthProvider>
+                  <Route
+                    path="/profile"
+                    element={
+                      <RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}>
+                        <Profile />
+                      </RequireAuth>
+                    }
+                  />
 
+                  <Route path="/settings" element={<Settings />} />
+
+                  <Route
+                    path="/admin"
+                    element={
+                      <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+                        <AdminLayout><Dashboard /></AdminLayout>
+                      </RequireAuth>
+                    }
+                  />
+
+                  <Route
+                    path="/admin/products"
+                    element={
+                      <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+                        <AdminLayout><Products /></AdminLayout>
+                      </RequireAuth>
+                    }
+                  />
+
+                  <Route
+                    path="/admin/orders"
+                    element={
+                      <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+                        <AdminLayout><OrdersAdmin /></AdminLayout>
+                      </RequireAuth>
+                    }
+                  />
+
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+                        <AdminLayout><Users /></AdminLayout>
+                      </RequireAuth>
+                    }
+                  />
+
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+
+              <Footer />
+              <ShowWhatsApp />
+              <LoginModalController />
+            </div>
+
+          </BrowserRouter>
+        </CartProvider>
+      </OrdersProvider>
+    </AuthProvider>
   );
 }
+
 
 function ShowWhatsApp() {
   const location = useLocation();

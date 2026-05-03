@@ -18,6 +18,8 @@ public class Order {
     private String id;
 
     private String userId;
+    private String userName;
+    private String phone;
     private List<OrderItem> items;
     private double totalPrice;
     private OrderStatus status;

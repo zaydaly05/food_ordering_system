@@ -2,11 +2,14 @@ package com.foodordering.mvc.service;
 import com.foodordering.mvc.model.Order;
 import com.foodordering.mvc.persistence.UserDocument;
 import com.foodordering.mvc.repository.OrderRepository;
+import com.foodordering.mvc.repository.UserRepository;
 import com.foodordering.mvc.DTO.CreateOrderRequest;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -14,6 +17,7 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     public Order createOrder(CreateOrderRequest request) {
 
@@ -36,6 +40,32 @@ public class OrderService {
      public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
+    public List<Map<String, Object>> getAllOrdersWithUsers() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(order -> {
+
+            Map<String, Object> result = new HashMap<>();
+
+            result.put("id", order.getId());
+            result.put("items", order.getItems());
+            result.put("totalPrice", order.getTotalPrice());
+            result.put("status", order.getStatus());
+            result.put("address", order.getAddress());
+            result.put("createdAt", order.getCreatedAt());
+
+            UserDocument user = userRepository.findById(order.getUserId())
+                    .orElse(null);
+
+                result.put("userName", user.getName() != null ? user.getName() : "Unknown");
+                result.put("phone", user.getPhone() != null ? user.getPhone() : "Unknown");
+            
+
+            return result;
+        }).toList();
+    }
+
+
 
 
     public List<Order> getUserOrders(String userId) {

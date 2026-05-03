@@ -2,6 +2,7 @@ package com.foodordering.mvc.persistence;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +13,14 @@ import java.util.Map;
 public class UserDocument {
     @Id
     private String id;
+    @Field("name")
     private String name;
     private String email;
     private String password;
     private String role;
+    @Field("phone")
     private String phone;
+    @Field("address")
     private String address;
     private Integer loyaltyPoints = 0;
     private List<String> permissions = new ArrayList<>();
