@@ -14,28 +14,42 @@ import {
 } from "chart.js";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { USER_ROLES, useAuth } from "../../../models/context/AuthContext";
+import { useOrders } from "../../../models/context/OrdersContext.js";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
+  const { getAllOrders } = useOrders();
   const [orders, setOrders] = useState([]);
   const [foodsCount, setFoodsCount] = useState([]);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("demo_orders") || "[]");
-    setOrders(saved.reverse());
+  const loadOrders = async () => {
+    try {
+      const dbOrders = await getAllOrders();
+      setOrders(dbOrders || []);
 
-    // compute top products
-    const counts = {};
-    saved.forEach((o) => {
-      (o.items || []).forEach((it) => {
-        counts[it.name] = (counts[it.name] || 0) + 1;
+      const counts = {};
+      (dbOrders || []).forEach((o) => {
+        (o.items || []).forEach((it) => {
+          counts[it.name] = (counts[it.name] || 0) + it.quantity;
+        });
       });
-    });
-    const arr = Object.keys(counts).map((k) => ({ name: k, count: counts[k] }));
-    arr.sort((a, b) => b.count - a.count);
-    setFoodsCount(arr.slice(0, 6));
-  }, []);
+
+      const arr = Object.keys(counts).map((k) => ({
+        name: k,
+        count: counts[k],
+      }));
+
+      arr.sort((a, b) => b.count - a.count);
+      setFoodsCount(arr.slice(0, 6));
+    } catch (error) {
+      toast.error("Failed to load dashboard data");
+    }
+  };
+
+  loadOrders();
+}, [getAllOrders]);
 
   // prepare revenue over last 7 days using order id timestamps
   const days = 7;
@@ -49,8 +63,17 @@ export default function Dashboard() {
     dayLabels.push(label);
     const start = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
     const end = start + 24 * 60 * 60 * 1000;
-    const dayOrders = orders.filter((o) => o.id >= start && o.id < end);
-    const revenue = dayOrders.reduce((s, o) => s + Number(o.total || 0), 0);
+    const dayOrders = orders.filter((o) => {
+  if (!o.createdAt) return false;
+
+  const orderTime = new Date(o.createdAt).getTime();
+  return orderTime >= start && orderTime < end;
+    });
+
+    const revenue = dayOrders.reduce(
+      (sum, o) => sum + Number(o.totalPrice || 0),
+      0
+    );
     revenueData.push(revenue);
     orderCounts.push(dayOrders.length);
   }
@@ -107,7 +130,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <motion.div whileHover={{ scale: 1.02 }} className="p-4 bg-white rounded shadow flex flex-col">
           <div className="text-sm text-gray-500">Total Revenue (7d)</div>
-          <div className="text-2xl font-bold text-orange-500">${totalRevenue.toFixed(2)}</div>
+          <div className="text-2xl font-bold text-orange-500">{totalRevenue.toFixed(2)} EGP</div>
           <div className="text-sm text-gray-500 mt-2">{totalOrders} orders</div>
         </motion.div>
 
@@ -149,14 +172,14 @@ export default function Dashboard() {
           <div className="text-gray-500">No orders yet.</div>
         ) : (
           <div className="grid gap-3">
-            {orders.slice(0, 6).map((o) => (
+            {orders.slice(0, 2).map((o) => (
               <div key={o.id} className="flex justify-between items-center">
                 <div>
                   <div className="font-medium">Order #{o.id}</div>
                   <div className="text-sm text-gray-500">{o.date}</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-orange-500">${o.total}</div>
+                  <div className="font-bold text-orange-500">{o.totalPrice} EGP</div>
                   <div className="text-sm text-gray-600">{o.paymentMethod} • {o.paymentStatus}</div>
                 </div>
               </div>

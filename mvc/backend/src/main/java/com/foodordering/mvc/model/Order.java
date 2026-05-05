@@ -16,7 +16,6 @@ public class Order {
 
     @Id
     private String id;
-
     private String userId;
     private String userName;
     private String phone;
@@ -27,7 +26,7 @@ public class Order {
     private LocalDateTime createdAt;
 
 
-    // Nested OrderItem class
+    
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -39,7 +38,7 @@ public class Order {
     }
 
 
-    // Nested enum
+    
     public enum OrderStatus {
         PENDING,
         CONFIRMED,
