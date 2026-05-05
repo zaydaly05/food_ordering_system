@@ -1,10 +1,12 @@
 package com.foodordering.mvc.service;
 
 import com.foodordering.mvc.repository.UserRepository;
-import com.foodordering.mvc.notification.EmailService;
+import com.foodordering.mvc.DTO.NotificationRequest;
+import com.foodordering.mvc.notification.NotificationInterface;
 import com.foodordering.mvc.persistence.UserDocument;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +24,11 @@ public class UserService {
     private static final List<String> ADMIN_PERMISSIONS = List.of("MANAGE_PRODUCTS", "MANAGE_ORDERS", "VIEW_REPORTS");
 
     private final UserRepository userRepository;
+    
     @Autowired
-    private EmailService emailService;
+    @Qualifier("emailLoginService")
+    private NotificationInterface emailService;
+    
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -48,15 +53,26 @@ public class UserService {
     if (!match) {
         throw new RuntimeException("Invalid password");
     }
+
+    
+        NotificationRequest req = new NotificationRequest();
+        req.setTo(user.getEmail());
+        req.setSubject("Welcome to Food Ordering System!");
+         req.setMessage("We're glad to see you again!\n\n" +
+        "Enjoy your experience.\n\n" +
+        "Best regards,\nFood Ordering Team");
+        req.setUserName(user.getName());
+
     try {
-        emailService.sendWelcomeEmail(user.getEmail());
+        emailService.sendNotification(req);
         System.out.println("Email sent to: " + user.getEmail());
     } catch (Exception e) {
         System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
     }
 
+
     return user;
-}
+    }
 
 
 
@@ -75,8 +91,15 @@ public class UserService {
             buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address)
     );
 
+    
+        NotificationRequest req = new NotificationRequest();
+        req.setTo(user.getEmail());
+        req.setSubject("Welcome to Food Ordering System!");
+        req.setMessage("We're glad to see you!\n\n" +"Your account has been created successfully.\n\n" +
+        "Best regards,\nFood Ordering Team");
+        req.setUserName(user.getName());
     try {
-        emailService.sendWelcomeEmail(user.getEmail());
+        emailService.sendNotification(req);
         System.out.println("Email sent to: " + user.getEmail());
     } catch (Exception e) {
         System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());

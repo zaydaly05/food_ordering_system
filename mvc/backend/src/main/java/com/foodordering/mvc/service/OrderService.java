@@ -1,9 +1,14 @@
 package com.foodordering.mvc.service;
 import com.foodordering.mvc.model.Order;
+import com.foodordering.mvc.notification.NotificationInterface;
 import com.foodordering.mvc.persistence.UserDocument;
 import com.foodordering.mvc.repository.OrderRepository;
 import com.foodordering.mvc.repository.UserRepository;
 import com.foodordering.mvc.DTO.CreateOrderRequest;
+import com.foodordering.mvc.DTO.NotificationRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
@@ -19,6 +24,10 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
 
+    @Autowired
+    @Qualifier("emailOrderService")
+    private NotificationInterface emailService;
+
     public Order createOrder(CreateOrderRequest request) {
 
         double total = request.getItems()
@@ -27,7 +36,7 @@ public class OrderService {
                 .sum();
 
         Order order = Order.builder()
-                .userId(request.getUserId())   // 👈 FIX HERE
+                .userId(request.getUserId()) 
                 .items(request.getItems())
                 .totalPrice(total)
                 .status(Order.OrderStatus.PENDING)
@@ -66,18 +75,38 @@ public class OrderService {
     }
 
 
-
-
     public List<Order> getUserOrders(String userId) {
         return orderRepository.findByUserId(userId);
     }
 
     public Order updateStatus(String orderId, Order.OrderStatus status) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
 
         order.setStatus(status);
-        return orderRepository.save(order);
+        Order updatedOrder = orderRepository.save(order);
+
+        UserDocument user = userRepository.findById(order.getUserId()).orElse(null);
+
+        NotificationRequest req = new NotificationRequest();
+
+        req.setTo(user.getEmail());
+        req.setSubject("Order Status Updated");
+        req.setMessage(
+            "Hello " + user.getName() + "\n" +
+            "Your order #" + order.getId() + " is " + order.getStatus() + ".\n\n" +
+            "Thank you for shopping with us!"   
+        );
+
+        try {
+            if (user != null && user.getEmail() != null) {
+                emailService.sendNotification(req);
+                System.out.println("Email sent to: " + user.getEmail());
+            }
+        }   catch (Exception e) {
+                System.out.println("Failed to send email notification: " + e.getMessage());
+            }
+        return updatedOrder;
     }
 
     public void deleteOrder(String orderId) {
