@@ -26,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     
     @Autowired
+    
     @Qualifier("emailLoginService")
     private NotificationInterface emailService;
     
@@ -39,74 +40,74 @@ public class UserService {
 
     public UserDocument login(String email, String password) {
 
-    String normalizedEmail = normalizeEmail(email);
+        String normalizedEmail = normalizeEmail(email);
 
-    UserDocument user = userRepository.findByEmail(normalizedEmail)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        UserDocument user = userRepository.findByEmail(normalizedEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    System.out.println("USER FOUND: " + user.getEmail());
+        System.out.println("USER FOUND: " + user.getEmail());
 
-    boolean match = passwordEncoder.matches(password, user.getPassword());
+        boolean match = passwordEncoder.matches(password, user.getPassword());
 
-    System.out.println("PASSWORD MATCH: " + match);
+        System.out.println("PASSWORD MATCH: " + match);
 
-    if (!match) {
-        throw new RuntimeException("Invalid password");
-    }
+        if (!match) {
+            throw new RuntimeException("Invalid password");
+        }
 
-    
+        
         NotificationRequest req = new NotificationRequest();
         req.setTo(user.getEmail());
-        req.setSubject("Welcome to Food Ordering System!");
-         req.setMessage("We're glad to see you again!\n\n" +
+        req.setSubject("Hello " + user.getName() + ",\n"+ "Welcome to Food Ordering System!");
+        req.setMessage("We're glad to see you again!\n\n" +
         "Enjoy your experience.\n\n" +
         "Best regards,\nFood Ordering Team");
         req.setUserName(user.getName());
 
-    try {
-        emailService.sendNotification(req);
-        System.out.println("Email sent to: " + user.getEmail());
-    } catch (Exception e) {
-        System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
-    }
+        try {
+            emailService.sendNotification(req);
+            System.out.println("Email sent to: " + user.getEmail());
+        } catch (Exception e) {
+            System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
+        }
 
 
-    return user;
+        return user;
     }
 
 
 
    public UserDocument signup(String name, String email, String password, String phone, String address) {
 
-    String normalizedEmail = normalizeEmail(email);
+        String normalizedEmail = normalizeEmail(email);
 
-    Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
+        Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
 
-    if (existing.isPresent()) {
-        return existing.get(); 
+        if (existing.isPresent()) {
+            return existing.get(); 
+        }
+        String encodedPassword = passwordEncoder.encode(password);
+
+        UserDocument user = userRepository.save(
+                buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address)
+        );
+
+        
+            NotificationRequest req = new NotificationRequest();
+            req.setTo(user.getEmail());
+            req.setSubject("Welcome to Food Ordering System!");
+            req.setMessage("We're glad to see you!\n\n" +"Your account has been created successfully.\n\n" +
+            "Best regards,\nFood Ordering Team");
+            req.setUserName(user.getName());
+        try {
+            emailService.sendNotification(req);
+            System.out.println("Email sent to: " + user.getEmail());
+        } catch (Exception e) {
+            System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
+        }
+
+        return user;
     }
-     String encodedPassword = passwordEncoder.encode(password);
-
-    UserDocument user = userRepository.save(
-            buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address)
-    );
-
-    
-        NotificationRequest req = new NotificationRequest();
-        req.setTo(user.getEmail());
-        req.setSubject("Welcome to Food Ordering System!");
-        req.setMessage("We're glad to see you!\n\n" +"Your account has been created successfully.\n\n" +
-        "Best regards,\nFood Ordering Team");
-        req.setUserName(user.getName());
-    try {
-        emailService.sendNotification(req);
-        System.out.println("Email sent to: " + user.getEmail());
-    } catch (Exception e) {
-        System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
-    }
-
-    return user;
-}
 
 
     public Optional<UserDocument> updateProfile(String id, String name, String phone, String address) {

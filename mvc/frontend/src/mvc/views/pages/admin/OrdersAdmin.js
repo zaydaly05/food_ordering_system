@@ -101,7 +101,7 @@ export default function OrdersAdmin() {
                       {item.name} × {item.quantity}
                     </span>
                     <span className="font-medium">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {(item.price * item.quantity).toFixed(2)} EGP
                     </span>
                   </div>
                 ))}
@@ -121,7 +121,7 @@ export default function OrdersAdmin() {
                   <div className="text-right">
                     <p className="text-sm text-gray-500">Total</p>
                     <p className="text-xl font-bold text-orange-500">
-                      ${o.totalPrice?.toFixed(2)}
+                       {o.totalPrice?.toFixed(2)} EGP
                     </p>
                   </div>
 

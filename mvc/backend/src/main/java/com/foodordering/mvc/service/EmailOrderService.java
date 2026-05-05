@@ -25,14 +25,6 @@ public class EmailOrderService implements NotificationInterface {
         message.setSubject(request.getSubject());
         message.setText(request.getMessage());
 
-
-
-        message.setText(
-            "Hello " + request.getUserName() + ",\n\n" +
-            "Your order #" + request.getOrderId() + " status has been updated to: " + request.getStatus() + "\n\n" +
-            "Thank you for shopping with us!"
-        );
-
         mailSender.send(message);
     }
 }

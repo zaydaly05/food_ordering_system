@@ -25,6 +25,7 @@ public class OrderService {
     private final UserRepository userRepository;
 
     @Autowired
+   
     @Qualifier("emailOrderService")
     private NotificationInterface emailService;
 
@@ -93,13 +94,15 @@ public class OrderService {
         req.setTo(user.getEmail());
         req.setSubject("Order Status Updated");
         req.setMessage(
-            "Hello " + user.getName() + "\n" +
-            "Your order #" + order.getId() + " is " + order.getStatus() + ".\n\n" +
-            "Thank you for shopping with us!"   
+        "Hello " + user.getName() + "\n" +
+        "Your order #" + order.getId() + " is " + order.getStatus() + ".\n\n" +
+        "Thank you for shopping with us!"   
         );
+        
 
         try {
             if (user != null && user.getEmail() != null) {
+              
                 emailService.sendNotification(req);
                 System.out.println("Email sent to: " + user.getEmail());
             }
