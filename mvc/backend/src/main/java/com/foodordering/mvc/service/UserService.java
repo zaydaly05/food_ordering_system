@@ -2,11 +2,10 @@ package com.foodordering.mvc.service;
 
 import com.foodordering.mvc.repository.UserRepository;
 import com.foodordering.mvc.DTO.NotificationRequest;
+import com.foodordering.mvc.model.User;
 import com.foodordering.mvc.notification.NotificationInterface;
-import com.foodordering.mvc.persistence.UserDocument;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +37,11 @@ public class UserService {
 
     
 
-    public UserDocument login(String email, String password) {
+    public User login(String email, String password) {
 
         String normalizedEmail = normalizeEmail(email);
 
-        UserDocument user = userRepository.findByEmail(normalizedEmail)
+        User user = userRepository.findByEmail(normalizedEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         System.out.println("USER FOUND: " + user.getEmail());
@@ -77,18 +76,18 @@ public class UserService {
 
 
 
-   public UserDocument signup(String name, String email, String password, String phone, String address) {
+   public User signup(String name, String email, String password, String phone, String address) {
 
         String normalizedEmail = normalizeEmail(email);
 
-        Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
+        Optional<User> existing = userRepository.findByEmail(normalizedEmail);
 
         if (existing.isPresent()) {
             return existing.get(); 
         }
         String encodedPassword = passwordEncoder.encode(password);
 
-        UserDocument user = userRepository.save(
+        User user = userRepository.save(
                 buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address)
         );
 
@@ -110,13 +109,13 @@ public class UserService {
     }
 
 
-    public Optional<UserDocument> updateProfile(String id, String name, String phone, String address) {
-        Optional<UserDocument> userOpt = userRepository.findById(id);
+    public Optional<User> updateProfile(String id, String name, String phone, String address) {
+        Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isEmpty()) {
             return Optional.empty();
         }
 
-        UserDocument user = userOpt.get();
+        User user = userOpt.get();
         if (name != null) {
             user.setName(name);
         }
@@ -129,13 +128,13 @@ public class UserService {
         return Optional.of(userRepository.save(user));
     }
 
-    public Optional<UserDocument> updatePreferences(String id, Map<String, Object> preferences) {
-        Optional<UserDocument> userOpt = userRepository.findById(id);
+    public Optional<User> updatePreferences(String id, Map<String, Object> preferences) {
+        Optional<User> userOpt = userRepository.findById(id);
         if (userOpt.isEmpty()) {
             return Optional.empty();
         }
 
-        UserDocument user = userOpt.get();
+        User user = userOpt.get();
         Map<String, Object> nextPreferences = new HashMap<>();
         if (user.getPreferences() != null) {
             nextPreferences.putAll(user.getPreferences());
@@ -147,13 +146,13 @@ public class UserService {
         return Optional.of(userRepository.save(user));
     }
 
-    public List<UserDocument> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public UserDocument createUserByAdmin(String name, String email, String phone, String address, String role, String password) {
+    public User createUserByAdmin(String name, String email, String phone, String address, String role, String password) {
         String normalizedEmail = normalizeEmail(email);
-        Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
+        Optional<User> existing = userRepository.findByEmail(normalizedEmail);
         if (existing.isPresent()) {
             throw new RuntimeException("Email already exists");
         }
@@ -162,18 +161,18 @@ public class UserService {
         }
 
         String encodedPassword = passwordEncoder.encode(password.trim());
-        UserDocument user = buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address);
+        User user = buildCustomerUser(normalizedEmail, encodedPassword, name, phone, address);
         applyRoleDefaults(user, role);
         return userRepository.save(user);
     }
 
-    public UserDocument updateUserByAdmin(String id, String name, String email, String phone, String address, String role, String password) {
-        UserDocument user = userRepository.findById(id)
+    public User updateUserByAdmin(String id, String name, String email, String phone, String address, String role, String password) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (email != null && !email.isBlank()) {
             String normalizedEmail = normalizeEmail(email);
-            Optional<UserDocument> existing = userRepository.findByEmail(normalizedEmail);
+            Optional<User> existing = userRepository.findByEmail(normalizedEmail);
             if (existing.isPresent() && !existing.get().getId().equals(id)) {
                 throw new RuntimeException("Email already exists");
             }
@@ -204,8 +203,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    private UserDocument buildAdminUser() {
-        UserDocument user = new UserDocument();
+    private User buildAdminUser() {
+        User user = new User();
         user.setName("System Admin");
         user.setEmail(ADMIN_EMAIL);
         user.setRole("ADMIN");
@@ -214,8 +213,8 @@ public class UserService {
         return user;
     }
 
-    private UserDocument buildCustomerUser(String email, String password, String name, String phone, String address) {
-        UserDocument user = new UserDocument();
+    private User buildCustomerUser(String email, String password, String name, String phone, String address) {
+        User user = new User();
         user.setEmail(email);
         user.setPassword(password);
         user.setRole("CUSTOMER");
@@ -227,7 +226,7 @@ public class UserService {
         return user;
     }
 
-    private void applyRoleDefaults(UserDocument user, String role) {
+    private void applyRoleDefaults(User user, String role) {
         String normalizedRole = role == null ? "CUSTOMER" : role.trim().toUpperCase(Locale.ROOT);
         if ("ADMIN".equals(normalizedRole)) {
             user.setRole("ADMIN");

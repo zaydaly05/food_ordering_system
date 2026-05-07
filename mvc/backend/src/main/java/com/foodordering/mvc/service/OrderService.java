@@ -1,7 +1,7 @@
 package com.foodordering.mvc.service;
 import com.foodordering.mvc.model.Order;
+import com.foodordering.mvc.model.User;
 import com.foodordering.mvc.notification.NotificationInterface;
-import com.foodordering.mvc.persistence.UserDocument;
 import com.foodordering.mvc.repository.OrderRepository;
 import com.foodordering.mvc.repository.UserRepository;
 import com.foodordering.mvc.DTO.CreateOrderRequest;
@@ -47,7 +47,7 @@ public class OrderService {
                 .build();
 
 
-        UserDocument user = userRepository.findById(request.getUserId()).orElse(null);
+        User user = userRepository.findById(request.getUserId()).orElse(null);
         
         NotificationRequest req = new NotificationRequest();
 
@@ -90,7 +90,7 @@ public class OrderService {
             result.put("address", order.getAddress());
             result.put("createdAt", order.getCreatedAt());
 
-            UserDocument user = userRepository.findById(order.getUserId()).orElse(null);
+            User user = userRepository.findById(order.getUserId()).orElse(null);
 
             result.put("userName", user.getName() != null ? user.getName() : "Unknown");
             result.put("phone", user.getPhone() != null ? user.getPhone() : "Unknown");
@@ -113,7 +113,7 @@ public class OrderService {
         order.setStatus(status);
         Order updatedOrder = orderRepository.save(order);
 
-        UserDocument user = userRepository.findById(order.getUserId()).orElse(null);
+        User user = userRepository.findById(order.getUserId()).orElse(null);
 
         NotificationRequest req = new NotificationRequest();
 

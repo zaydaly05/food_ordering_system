@@ -1,4 +1,4 @@
-package com.foodordering.mvc.persistence;
+package com.foodordering.mvc.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Document(collection = "users")
-public class UserDocument {
+public class User {
     @Id
     private String id;
     @Field("name")

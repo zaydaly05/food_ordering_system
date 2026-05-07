@@ -1,6 +1,6 @@
 package com.foodordering.mvc.controller;
 
-import com.foodordering.mvc.persistence.UserDocument;
+import com.foodordering.mvc.model.User;
 import com.foodordering.mvc.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -29,8 +29,8 @@ public class UserAuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<UserDocument> login(@Valid @RequestBody LoginRequest request) {
-        UserDocument user = userService.login(
+    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest request) {
+        User user = userService.login(
                 request.email(),
                 request.password()
         );
@@ -38,8 +38,8 @@ public class UserAuthController {
     }
 
     @PostMapping("/auth/signup")
-    public ResponseEntity<UserDocument> signup(@Valid @RequestBody SignupRequest request) {
-        UserDocument user = userService.signup(
+    public ResponseEntity<User> signup(@Valid @RequestBody SignupRequest request) {
+        User user = userService.signup(
                 request.name(),
                 request.email(),
                 request.password(),
@@ -50,25 +50,25 @@ public class UserAuthController {
     }
 
     @PutMapping("/users/{id}/profile")
-    public ResponseEntity<UserDocument> updateProfile(@PathVariable String id, @RequestBody UpdateProfileRequest request) {
-        Optional<UserDocument> updated = userService.updateProfile(id, request.name(), request.phone(), request.address());
+    public ResponseEntity<User> updateProfile(@PathVariable String id, @RequestBody UpdateProfileRequest request) {
+        Optional<User> updated = userService.updateProfile(id, request.name(), request.phone(), request.address());
         return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/users/{id}/preferences")
-    public ResponseEntity<UserDocument> updatePreferences(@PathVariable String id, @RequestBody Map<String, Object> preferences) {
-        Optional<UserDocument> updated = userService.updatePreferences(id, preferences);
+    public ResponseEntity<User> updatePreferences(@PathVariable String id, @RequestBody Map<String, Object> preferences) {
+        Optional<User> updated = userService.updatePreferences(id, preferences);
         return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserDocument>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserDocument> createUserByAdmin(@Valid @RequestBody CreateUserRequest request) {
-        UserDocument created = userService.createUserByAdmin(
+    public ResponseEntity<User> createUserByAdmin(@Valid @RequestBody CreateUserRequest request) {
+        User created = userService.createUserByAdmin(
                 request.name(),
                 request.email(),
                 request.phone(),
@@ -80,8 +80,8 @@ public class UserAuthController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserDocument> updateUserByAdmin(@PathVariable String id, @RequestBody UpdateUserRequest request) {
-        UserDocument updated = userService.updateUserByAdmin(
+    public ResponseEntity<User> updateUserByAdmin(@PathVariable String id, @RequestBody UpdateUserRequest request) {
+        User updated = userService.updateUserByAdmin(
                 id,
                 request.name(),
                 request.email(),
