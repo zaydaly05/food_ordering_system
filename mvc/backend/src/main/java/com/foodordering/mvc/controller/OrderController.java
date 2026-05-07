@@ -2,7 +2,6 @@ package com.foodordering.mvc.controller;
 import com.foodordering.mvc.DTO.CreateOrderRequest;
 import com.foodordering.mvc.model.Order;
 import com.foodordering.mvc.model.Order.OrderStatus;
-import com.foodordering.mvc.persistence.UserDocument;
 import com.foodordering.mvc.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

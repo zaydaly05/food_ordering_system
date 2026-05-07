@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 
-// implementation of order conttroller
+// implementation of order service
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -28,7 +28,7 @@ public class OrderService {
     @Autowired
    
     
-    private NotificationInterface orderService = new EmailService();
+    private NotificationInterface orderEmail = new EmailService();
 
     public Order createOrder(CreateOrderRequest request) {
 
@@ -45,6 +45,31 @@ public class OrderService {
                 .address(request.getAddress())
                 .createdAt(LocalDateTime.now())
                 .build();
+
+
+        UserDocument user = userRepository.findById(request.getUserId()).orElse(null);
+        
+        NotificationRequest req = new NotificationRequest();
+
+        req.setTo(user.getEmail());
+        req.setSubject("Order Received");
+        req.setMessage(
+        "Hello " + user.getName() + "\n" +
+        "Your order" + " has been received, great stuff are working on it" + ".\n\n" +
+        "Thank you for shopping with us!"   
+        );
+        
+
+        try {
+            if (user != null && user.getEmail() != null) {
+              
+                orderEmail.sendNotification(req);
+                System.out.println("Email sent to: " + user.getEmail());
+            }
+        }   catch (Exception e) {
+                System.out.println("Failed to send email notification: " + e.getMessage());
+            }
+        
 
         return orderRepository.save(order);
     }
@@ -65,12 +90,12 @@ public class OrderService {
             result.put("address", order.getAddress());
             result.put("createdAt", order.getCreatedAt());
 
-            UserDocument user = userRepository.findById(order.getUserId())
-                    .orElse(null);
+            UserDocument user = userRepository.findById(order.getUserId()).orElse(null);
 
-                result.put("userName", user.getName() != null ? user.getName() : "Unknown");
-                result.put("phone", user.getPhone() != null ? user.getPhone() : "Unknown");
-            
+            result.put("userName", user.getName() != null ? user.getName() : "Unknown");
+            result.put("phone", user.getPhone() != null ? user.getPhone() : "Unknown");
+
+
 
             return result;
         }).toList();
@@ -104,7 +129,7 @@ public class OrderService {
         try {
             if (user != null && user.getEmail() != null) {
               
-                orderService.sendNotification(req);
+                orderEmail.sendNotification(req);
                 System.out.println("Email sent to: " + user.getEmail());
             }
         }   catch (Exception e) {
