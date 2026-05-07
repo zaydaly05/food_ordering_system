@@ -1,5 +1,4 @@
 package com.foodordering.mvc.service;
-import javax.management.Notification;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,8 +8,9 @@ import org.springframework.scheduling.annotation.Async;
 import com.foodordering.mvc.DTO.NotificationRequest;
 import com.foodordering.mvc.notification.NotificationInterface;
 
+// service for email notification
 @Service
-public class EmailOrderService implements NotificationInterface {
+public class EmailService implements NotificationInterface {
 
     @Autowired
     private JavaMailSender mailSender;

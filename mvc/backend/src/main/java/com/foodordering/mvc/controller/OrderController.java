@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 
+// implementation of order conttroller with endpoints for creating, updating, deleting and fetching orders. also includes endpoint to fetch all orders with user details.
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor

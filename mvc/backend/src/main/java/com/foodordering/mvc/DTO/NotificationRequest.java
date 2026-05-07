@@ -1,5 +1,6 @@
 package com.foodordering.mvc.DTO;
 
+// factory for notification 
 public class NotificationRequest {
 
     private String to;

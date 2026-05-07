@@ -27,8 +27,8 @@ public class UserService {
     
     @Autowired
     
-    @Qualifier("emailLoginService")
-    private NotificationInterface emailService;
+  
+    private NotificationInterface welcomeEmail = new EmailService();
     
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -65,7 +65,7 @@ public class UserService {
         req.setUserName(user.getName());
 
         try {
-            emailService.sendNotification(req);
+            welcomeEmail.sendNotification(req);
             System.out.println("Email sent to: " + user.getEmail());
         } catch (Exception e) {
             System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());
@@ -100,7 +100,7 @@ public class UserService {
             "Best regards,\nFood Ordering Team");
             req.setUserName(user.getName());
         try {
-            emailService.sendNotification(req);
+            welcomeEmail.sendNotification(req);
             System.out.println("Email sent to: " + user.getEmail());
         } catch (Exception e) {
             System.out.println("Email failed: " + user.getEmail() + " - " + e.getMessage());

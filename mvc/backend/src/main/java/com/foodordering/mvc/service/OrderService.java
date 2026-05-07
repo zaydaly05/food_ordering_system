@@ -8,7 +8,7 @@ import com.foodordering.mvc.DTO.CreateOrderRequest;
 import com.foodordering.mvc.DTO.NotificationRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 
+// implementation of order conttroller
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -26,8 +27,8 @@ public class OrderService {
 
     @Autowired
    
-    @Qualifier("emailOrderService")
-    private NotificationInterface emailService;
+    
+    private NotificationInterface orderService = new EmailService();
 
     public Order createOrder(CreateOrderRequest request) {
 
@@ -103,7 +104,7 @@ public class OrderService {
         try {
             if (user != null && user.getEmail() != null) {
               
-                emailService.sendNotification(req);
+                orderService.sendNotification(req);
                 System.out.println("Email sent to: " + user.getEmail());
             }
         }   catch (Exception e) {

@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
+// order model with order item and order status enum. also includes user details for fetching all orders with user details.
 @Document(collection = "orders")
 @Data
 @NoArgsConstructor
