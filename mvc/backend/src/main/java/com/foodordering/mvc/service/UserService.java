@@ -203,15 +203,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    private User buildAdminUser() {
-        User user = new User();
-        user.setName("System Admin");
-        user.setEmail(ADMIN_EMAIL);
-        user.setRole("ADMIN");
-        user.setPermissions(ADMIN_PERMISSIONS);
-        user.setPreferences(defaultAdminPreferences());
-        return user;
-    }
+
 
     private User buildCustomerUser(String email, String password, String name, String phone, String address) {
         User user = new User();
