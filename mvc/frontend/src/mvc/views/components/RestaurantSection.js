@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getAllRestaurants }
-from "../../controllers/RestaurantController";
+from "../../models/context/RestaurantContext.js";
 
 import { restaurantImages }
 from "./restaurantImages";

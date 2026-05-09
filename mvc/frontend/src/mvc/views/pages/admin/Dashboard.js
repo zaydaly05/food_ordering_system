@@ -13,7 +13,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line, Bar, Pie } from "react-chartjs-2";
-import { USER_ROLES, useAuth } from "../../../models/context/AuthContext";
+
 import { useOrders } from "../../../models/context/OrdersContext.js";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend);
