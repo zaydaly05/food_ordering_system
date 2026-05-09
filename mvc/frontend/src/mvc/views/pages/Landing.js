@@ -77,14 +77,25 @@ export default function Landing() {
               Fresh, delicious meals prepared with care.
             </p>
 
-            <div className="mt-6 flex gap-3">
-              <Link to="/menu" className="bg-orange-500 text-white px-4 py-2 rounded">
-                View Menu
-              </Link>
-              <Link to="/about" className="px-4 py-2 border rounded">
-                About Us
-              </Link>
-            </div>
+           <div className="mt-6 flex gap-3">
+
+  <Link
+    to="/menu"
+    className="bg-orange-500 text-white px-4 py-2 rounded"
+  >
+    View Menu
+  </Link>
+
+ 
+
+  <Link
+    to="/about"
+    className="px-4 py-2 border rounded"
+  >
+    About Us
+  </Link>
+
+</div>
           </div>
 
           <div className="p-4">

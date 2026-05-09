@@ -32,6 +32,8 @@ import Footer from "../views/components/Footer";
 import WhatsAppButton from "../views/components/WhatsAppButton";
 
 import RestaurantsAdmin from "../views/pages/admin/RestaurantsAdmin";
+import Restaurants from "../views/pages/Restaurant";
+import RestaurantDetails from "../views/pages/RestaurantDetails";
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -127,7 +129,7 @@ export default function App() {
                     }
                   />
 
-                  <Route path="*" element={<NotFound />} />
+                  
 <Route
   path="/admin/restaurants"
   element={
@@ -138,6 +140,16 @@ export default function App() {
     </RequireAuth>
   }
 />
+<Route
+  path="/restaurants"
+  element={<Restaurants />}
+/>
+
+<Route
+  path="/restaurants/:id"
+  element={<RestaurantDetails />}
+/>
+<Route path="*" element={<NotFound />} />
 
                 </Routes>
               </main>

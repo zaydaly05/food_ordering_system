@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { getAllRestaurants }
 from "../../controllers/RestaurantController";
-
-import { restaurantImages }
-from "./restaurantImages";
 
 export default function RestaurantSection() {
 
@@ -38,34 +36,40 @@ export default function RestaurantSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {restaurants.map((r) => (
-            <div
+
+            <Link
+              to={`/restaurants/${r.id}`}
               key={r.id}
-              className="bg-white rounded-xl shadow overflow-hidden hover:shadow-xl transition"
             >
 
-              <img
-                src={restaurantImages[r.image]}
-                alt={r.name}
-                className="w-full h-52 object-cover"
-              />
+              <div className="bg-white rounded-xl shadow overflow-hidden hover:shadow-xl transition">
 
-              <div className="p-5">
+                <img
+                  src={r.image}
+                  alt={r.name}
+                  className="w-full h-52 object-cover"
+                />
 
-                <h3 className="text-xl font-bold mb-2">
-                  {r.name}
-                </h3>
+                <div className="p-5">
 
-                <p className="text-gray-600">
-                  {r.address}
-                </p>
+                  <h3 className="text-xl font-bold mb-2">
+                    {r.name}
+                  </h3>
 
-                <p className="text-gray-500 mt-2">
-                  {r.phone}
-                </p>
+                  <p className="text-gray-600">
+                    {r.address}
+                  </p>
+
+                  <p className="text-gray-500 mt-2">
+                    {r.phone}
+                  </p>
+
+                </div>
 
               </div>
 
-            </div>
+            </Link>
+
           ))}
 
         </div>

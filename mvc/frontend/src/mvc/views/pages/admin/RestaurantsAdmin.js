@@ -110,6 +110,16 @@ return (
   onSubmit={handleSubmit}
   className="grid grid-cols-1 md:grid-cols-4 gap-4"
 >
+  
+<input
+  type="text"
+  name="name"
+  placeholder="Restaurant Name"
+  value={form.name}
+  onChange={handleChange}
+  className="border p-3 rounded"
+/>
+
 
 <input
   type="text"

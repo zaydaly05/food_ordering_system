@@ -39,7 +39,7 @@ public class RestaurantService {
             existingRestaurant.setName(updatedRestaurant.getName());
             existingRestaurant.setAddress(updatedRestaurant.getAddress());
             existingRestaurant.setPhone(updatedRestaurant.getPhone());
-
+            existingRestaurant.setImage(updatedRestaurant.getImage());
             return repository.save(existingRestaurant);
         }
 
