@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { getAllRestaurants }
-from "../../controllers/RestaurantController";
+from "../../models/context/RestaurantContext.js";
 
 export default function RestaurantSection() {
 

@@ -5,7 +5,7 @@ import {
   addRestaurant,
   deleteRestaurant,
   updateRestaurant
-} from "../../../controllers/RestaurantController";
+} from "../../../models/context/RestaurantContext.js";
 
 export default function RestaurantsAdmin() {
 
