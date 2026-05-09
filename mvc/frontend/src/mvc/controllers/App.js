@@ -31,6 +31,8 @@ import { Toaster } from "react-hot-toast";
 import Footer from "../views/components/Footer";
 import WhatsAppButton from "../views/components/WhatsAppButton";
 
+import RestaurantsAdmin from "../views/pages/admin/RestaurantsAdmin";
+
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -126,6 +128,17 @@ export default function App() {
                   />
 
                   <Route path="*" element={<NotFound />} />
+<Route
+  path="/admin/restaurants"
+  element={
+    <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+      <AdminLayout>
+        <RestaurantsAdmin />
+      </AdminLayout>
+    </RequireAuth>
+  }
+/>
+
                 </Routes>
               </main>
 

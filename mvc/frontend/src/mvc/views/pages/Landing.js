@@ -2,7 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { foods } from "../../models/data/foods";
 import { Link } from "react-router-dom";
-
+import RestaurantSection from "../components/RestaurantSection";
 function Slider({ images }) {
   const [index, setIndex] = React.useState(0);
 
@@ -92,6 +92,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      <RestaurantSection />
       <section className="text-center">
         <h2 className="text-2xl font-bold mb-3">Why Choose Us?</h2>
         <p className="text-gray-700 mb-6">

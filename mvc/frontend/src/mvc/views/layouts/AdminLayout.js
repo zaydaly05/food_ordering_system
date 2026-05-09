@@ -11,6 +11,12 @@ export default function AdminLayout({ children }) {
           <Link to="/admin/products" className="px-3 py-2 rounded hover:bg-slate-800">Products</Link>
           <Link to="/admin/orders" className="px-3 py-2 rounded hover:bg-slate-800">Orders</Link>
           <Link to="/admin/users" className="px-3 py-2 rounded hover:bg-slate-800">Users</Link>
+          <Link
+  to="/admin/restaurants"
+  className="px-3 py-2 rounded hover:bg-slate-800"
+>
+  Restaurants
+</Link>
         </nav>
       </aside>
 
