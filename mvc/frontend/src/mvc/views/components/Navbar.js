@@ -25,7 +25,7 @@ export default function Navbar({ setIsCartOpen }) {
     Restaurants
   </Link>
 
-          <Link to="/menu" className="hover:text-orange-500">Menu</Link>
+          
           {isCustomer ? <Link to="/orders" className="hover:text-orange-500">Orders</Link> : null}
           {isCustomer ? <Link to="/checkout" className="hover:text-orange-500">Checkout</Link> : null}
           {isLoggedIn ? (
@@ -72,7 +72,7 @@ export default function Navbar({ setIsCartOpen }) {
       {open && (
         <div className="md:hidden bg-white border-t">
           <div className="flex flex-col p-4 gap-3">
-            <Link to="/menu" onClick={() => setOpen(false)}>Menu</Link>
+            
             {isCustomer ? <Link to="/orders" onClick={() => setOpen(false)}>Orders</Link> : null}
             {isCustomer ? <Link to="/checkout" onClick={() => setOpen(false)}>Checkout</Link> : null}
             {isLoggedIn ? (

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import RestaurantSection from "../components/RestaurantSection";
+
+
 
 export default function Landing() {
 
@@ -38,7 +39,7 @@ export default function Landing() {
 
       </div>
 
-      <section className="hero-animated p-6 rounded-lg mb-8">
+      <section className="hero-animated p-6 rounded-lg mb-8 bg-gradient-to-r from-orange-200 to-orange-600">
 
         <div className="grid md:grid-cols-2 gap-6 items-center">
 
@@ -55,10 +56,10 @@ export default function Landing() {
             <div className="mt-6 flex gap-3">
 
               <Link
-                to="/menu"
+                to="/restaurants"
                 className="bg-orange-500 text-white px-4 py-2 rounded"
               >
-                View Menu
+                View Restaurants
               </Link>
 
               <Link
@@ -76,22 +77,24 @@ export default function Landing() {
 
       </section>
 
-      <RestaurantSection />
+      
 
-      <section className="text-center">
-
+      <section
+      className="text-center bg-cover bg-center bg-no-repeat py-16 px-6 rounded-lg"
+      
+    >
+      <div className="bg-black/50 p-6 rounded-lg text-white">
         <h2 className="text-2xl font-bold mb-3">
           Why Choose Us?
         </h2>
 
-        <p className="text-gray-700 mb-6">
+        <p className="mb-6">
           We use only the freshest ingredients, sourced locally whenever possible.
           Our chefs are passionate about creating delicious meals that satisfy
           every craving.
         </p>
-
-      </section>
-
+      </div>
+    </section>
     </main>
   );
 }
