@@ -13,7 +13,7 @@ export default function Products() {
     if (saved && Array.isArray(saved)) {
       setItems(saved);
     } else {
-      setItems(defaultFoods);
+     setItems([]);
     }
   }, []);
 

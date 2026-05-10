@@ -1,5 +1,4 @@
 
-import FoodCard from "../components/FoodCard";
 import { motion } from "framer-motion";
 
 export default function Home() {
