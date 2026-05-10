@@ -17,6 +17,12 @@ export default function AdminLayout({ children }) {
 >
   Restaurants
 </Link>
+  <Link
+    to="/admin/menuitems"
+    className="px-3 py-2 rounded hover:bg-slate-800"
+  >
+    Menu Items
+  </Link>
         </nav>
       </aside>
 

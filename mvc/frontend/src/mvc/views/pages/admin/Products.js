@@ -1,4 +1,4 @@
-import { foods as defaultFoods } from "../../../models/data/foods";
+
 import { motion } from "framer-motion";
 import ImageWithFallback from "../../components/ImageWithFallback";
 import { useEffect, useState } from "react";

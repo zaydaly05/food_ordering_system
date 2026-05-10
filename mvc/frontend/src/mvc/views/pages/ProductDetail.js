@@ -1,5 +1,4 @@
 import { useParams, Link } from "react-router-dom";
-import { foods } from "../../models/data/foods";
 import { useCart } from "../../models/context/CartContext";
 import toast from "react-hot-toast";
 import ImageWithFallback from "../components/ImageWithFallback";
@@ -7,7 +6,7 @@ import { useAuth } from "../../models/context/AuthContext";
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const item = foods.find((f) => String(f.id) === String(id));
+
   const { addToCart } = useCart();
   const { isLoggedIn, openLogin } = useAuth();
 

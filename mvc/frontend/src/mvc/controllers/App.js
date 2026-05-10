@@ -35,6 +35,8 @@ import RestaurantsAdmin from "../views/pages/admin/RestaurantsAdmin";
 import Restaurants from "../views/pages/Restaurant";
 import RestaurantDetails from "../views/pages/RestaurantDetails";
 
+import MenuitemsAdmin from "../views/pages/admin/MenuitemsAdmin";
+
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -128,6 +130,16 @@ export default function App() {
                       </RequireAuth>
                     }
                   />
+                  <Route
+  path="/admin/menuitems"
+  element={
+    <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+      <AdminLayout>
+        <MenuitemsAdmin />
+      </AdminLayout>
+    </RequireAuth>
+  }
+/>
 
                   
 <Route

@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { foods } from "../../models/data/foods";
+
 import { Link } from "react-router-dom";
 import RestaurantSection from "../components/RestaurantSection";
 function Slider({ images }) {
@@ -29,7 +29,7 @@ function Slider({ images }) {
 }
 
 export default function Landing() {
-  const baseImages = foods.map((f) => f.image);
+  
 
   const extraImages = [
     "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop",
@@ -37,7 +37,7 @@ export default function Landing() {
     "https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?q=80&w=1600&auto=format&fit=crop",
   ];
 
-  const images = [...baseImages, ...extraImages, ...baseImages];
+  
 
   // 🔥 NEW: backend status
   const [backendStatus, setBackendStatus] = React.useState("checking");
@@ -99,7 +99,7 @@ export default function Landing() {
           </div>
 
           <div className="p-4">
-            <Slider images={images} />
+           
           </div>
         </div>
       </section>
