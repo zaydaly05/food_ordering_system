@@ -10,6 +10,9 @@ export const CartProvider = ({ children }) => {
   const { isLoggedIn, openLogin } = useAuth();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 8eb1c3758e122880a8b5d9a3e62fe8fa3e49870f
   const addToCart = (item) => {
     if (!isLoggedIn) {
       openLogin();
@@ -18,6 +21,7 @@ export const CartProvider = ({ children }) => {
     }
     setCart(prev => [...prev, item]);
   };
+<<<<<<< HEAD
 =======
  const addToCart = (item) => {
   if (!isLoggedIn) {
@@ -41,6 +45,8 @@ export const CartProvider = ({ children }) => {
   });
 };
 >>>>>>> 5a4c7ba0 (initial commit)
+=======
+>>>>>>> 8eb1c3758e122880a8b5d9a3e62fe8fa3e49870f
 
   const removeFromCart = (id) => {
     setCart(prev => prev.filter((it) => it.id !== id));

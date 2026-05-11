@@ -10,19 +10,16 @@ export default function Checkout() {
   const [address, setAddress] = useState("");
   const [placing, setPlacing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("instapay");
-  const [card, setCard] = useState({
-    number: "",
-    name: "",
-    exp: "",
-    cvv: "",
-  });
+  const [card, setCard] = useState({ number: "", name: "", exp: "", cvv: "" });
 
   const navigate = useNavigate();
   const { isLoggedIn, openLogin } = useAuth();
 
-  // CHANGED: Fixed math to multiply by quantity to prevent incorrect logic
-  const subtotal = cart.reduce((s, it) => s + (it.price * (it.quantity || 1)), 0);
-  
+  const subtotal = cart.reduce(
+    (s, it) => s + it.price * (it.quantity || 1),
+    0
+  );
+
   const serviceFeeRate = 0.05;
   const vatRate = 0.1;
   const deliveryFeeFixed = 3;
@@ -57,9 +54,7 @@ export default function Checkout() {
     try {
       const cartId = localStorage.getItem("currentCartId");
 
-      if (!cartId) {
-        throw new Error("No cart ID found. Please go back to cart.");
-      }
+      if (!cartId) throw new Error("No cart ID found");
 
       let backendPaymentFormat = paymentMethod.toUpperCase();
       if (backendPaymentFormat === "COD") backendPaymentFormat = "CASH";
@@ -69,18 +64,12 @@ export default function Checkout() {
         `http://localhost:8080/api/cart/${cartId}/payment`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            paymentMethod: backendPaymentFormat,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentMethod: backendPaymentFormat }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to update payment method");
-      }
+      if (!response.ok) throw new Error("Failed to update payment");
 
       await response.json();
 
@@ -89,9 +78,8 @@ export default function Checkout() {
 
       toast.success("Order placed successfully!");
       navigate("/orders");
-    } catch (error) {
-      console.error("Order Error:", error);
-      toast.error(error.message);
+    } catch (err) {
+      toast.error(err.message);
     } finally {
       setPlacing(false);
     }
@@ -102,10 +90,7 @@ export default function Checkout() {
       <h1 className="text-2xl font-bold mb-4">Checkout</h1>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Delivery + Payment */}
-        <div className="bg-white rounded shadow p-4">
-          <h2 className="font-semibold mb-2">Delivery</h2>
-
+        <div className="bg-white p-4 shadow rounded">
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -117,130 +102,58 @@ export default function Checkout() {
             <h3 className="font-semibold">Payment</h3>
 
             <div className="flex flex-col gap-2 mt-2">
-              <label className="flex items-center gap-2">
+              <label>
                 <input
                   type="radio"
                   checked={paymentMethod === "instapay"}
                   onChange={() => setPaymentMethod("instapay")}
-                />
-                Instapay
+                /> Instapay
               </label>
 
-              <label className="flex items-center gap-2">
+              <label>
                 <input
                   type="radio"
                   checked={paymentMethod === "credit"}
                   onChange={() => setPaymentMethod("credit")}
-                />
-                Credit Card
+                /> Credit Card
               </label>
 
-              <label className="flex items-center gap-2">
+              <label>
                 <input
                   type="radio"
                   checked={paymentMethod === "cod"}
                   onChange={() => setPaymentMethod("cod")}
-                />
-                Cash on Delivery
+                /> Cash
               </label>
             </div>
-
-            {paymentMethod === "credit" && (
-              <div className="mt-3 space-y-2">
-                <input
-                  className="border p-2 w-full"
-                  placeholder="Card Number"
-                  value={card.number}
-                  onChange={(e) =>
-                    setCard({ ...card, number: e.target.value })
-                  }
-                />
-
-                <input
-                  className="border p-2 w-full"
-                  placeholder="Name on Card"
-                  value={card.name}
-                  onChange={(e) =>
-                    setCard({ ...card, name: e.target.value })
-                  }
-                />
-
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    className="border p-2"
-                    placeholder="MM/YY"
-                    value={card.exp}
-                    onChange={(e) =>
-                      setCard({ ...card, exp: e.target.value })
-                    }
-                  />
-
-                  <input
-                    className="border p-2"
-                    placeholder="CVV"
-                    value={card.cvv}
-                    onChange={(e) =>
-                      setCard({ ...card, cvv: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Summary */}
-        <div className="bg-white rounded shadow p-4">
-          <h2 className="font-semibold mb-2">Order Summary</h2>
+        <div className="bg-white p-4 shadow rounded">
+          <h2 className="font-semibold">Summary</h2>
 
-          <div className="space-y-2 max-h-60 overflow-auto">
-            {cart.map((it, i) => (
-              <div key={i} className="flex justify-between">
-                <span>{it.quantity || 1}x {it.name}</span>
-                <span>${(it.price * (it.quantity || 1)).toFixed(2)}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 space-y-1 text-sm">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+          {cart.map((it, i) => (
+            <div key={i} className="flex justify-between">
+              <span>
+                {it.quantity || 1}x {it.name}
+              </span>
+              <span>${(it.price * (it.quantity || 1)).toFixed(2)}</span>
             </div>
+          ))}
 
-            <div className="flex justify-between">
-              <span>Service Fee</span>
-              <span>${serviceFee.toFixed(2)}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>VAT</span>
-              <span>${vat.toFixed(2)}</span>
-            </div>
-
-            {isDelivery && (
-              <div className="flex justify-between">
-                <span>Delivery</span>
-                <span>${deliveryFee.toFixed(2)}</span>
-              </div>
-            )}
-
-            <div className="flex justify-between font-bold text-base mt-2">
-              <span>Total</span>
-              <span>${total.toFixed(2)}</span>
-            </div>
+          <div className="mt-4 font-bold">
+            Total: ${total.toFixed(2)}
           </div>
         </div>
       </div>
 
-      <motion.button
-        whileTap={{ scale: 0.98 }}
+      <button
         onClick={placeOrder}
         disabled={placing}
         className="mt-6 w-full bg-orange-500 text-white py-3 rounded"
       >
         {placing ? "Processing..." : "Place Order"}
-      </motion.button>
+      </button>
     </div>
   );
 }
