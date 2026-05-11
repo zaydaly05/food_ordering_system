@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply bg-gray-50 text-gray-800 antialiased;
+	}
+}
+
+@layer utilities {
+	.hero-animated {
+		background: linear-gradient(270deg, #ffedd5, #fff7ed, #fff1f2, #fff7ed);
+		background-size: 600% 600%;
+		animation: gradientBG 12s ease infinite;
+		border-radius: 0.5rem;
+	}
+
+	@keyframes gradientBG {
+		0% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+		100% { background-position: 0% 50%; }
+	}
+}
+
+/* Global animated background */
+@layer utilities {
+	.global-animated-bg {
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background: radial-gradient(circle at 10% 20%, rgba(255,159,67,0.08), transparent 8%), radial-gradient(circle at 80% 80%, rgba(99,102,241,0.06), transparent 15%), radial-gradient(circle at 50% 50%, rgba(34,197,94,0.04), transparent 30%);
+		mix-blend-mode: multiply;
+		backdrop-filter: blur(0px);
+		animation: globalMove 18s linear infinite;
+
+		/* make animated gradient overlay for visibility */
+	}
+
+	.global-animated-bg::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(120deg, rgba(255,255,255,0.02), rgba(255,200,150,0.03), rgba(200,220,255,0.02));
+		background-size: 300% 300%;
+		animation: subtleShift 10s ease infinite;
+		pointer-events: none;
+		opacity: 1;
+	}
+
+	/* canvas for particle network */
+	.particle-canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	.bg-blob {
+		position: absolute;
+		border-radius: 9999px;
+		filter: blur(24px);
+		opacity: 0.9;
+	}
+
+	.blob-1 { width: 360px; height: 360px; background: rgba(255,159,67,0.12); left: -80px; top: -40px; }
+	.blob-2 { width: 420px; height: 420px; background: rgba(99,102,241,0.09); right: -120px; bottom: -40px; }
+	.blob-3 { width: 280px; height: 280px; background: rgba(34,197,94,0.06); left: 20%; bottom: 10%; }
+
+	/* floatY keyframes are intentionally removed; Framer Motion handles blob transforms */
+
+	@keyframes globalMove {
+		0% { transform: translate(0,0) scale(1); }
+		50% { transform: translate(-10px,8px) scale(1.02); }
+		100% { transform: translate(0,0) scale(1); }
+	}
+
+	@keyframes subtleShift {
+		0% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+		100% { background-position: 0% 50%; }
+	}
+}
+
+/* Dark theme overrides (applies when <html> has class="dark") */
+@layer base {
+	.dark body {
+		@apply bg-slate-900 text-slate-100;
+	}
+
+	.dark .bg-white { @apply bg-slate-800; }
+	.dark .text-gray-600 { @apply text-slate-300; }
+	.dark .text-gray-500 { @apply text-slate-400; }
+	.dark .border { @apply border-slate-700; }
+	.dark .shadow { @apply shadow-black/30; }
+}
