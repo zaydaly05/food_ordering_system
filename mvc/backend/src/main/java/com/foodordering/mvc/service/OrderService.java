@@ -1,4 +1,5 @@
 package com.foodordering.mvc.service;
+import com.foodordering.mvc.model.Menuitem;
 import com.foodordering.mvc.model.Order;
 import com.foodordering.mvc.model.User;
 import com.foodordering.mvc.notification.NotificationInterface;
@@ -23,31 +24,43 @@ import java.util.Map;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final MenuitemService menuitemService;
+
 
     @Autowired
    
     
     private NotificationInterface orderEmail = new EmailService();
-
     public Order createOrder(CreateOrderRequest request) {
 
-        double total = request.getItems()
-                .stream()
-                .mapToDouble(i -> i.getPrice() * i.getQuantity())
-                .sum();
+    List<Order.OrderItem> orderItems = request.getItems().stream().map(item -> {
 
-        Order order = Order.builder()
-                .userId(request.getUserId()) 
-                .items(request.getItems())
-                .totalPrice(total)
-                .status(Order.OrderStatus.PENDING)
-                .address(request.getAddress())
-                .createdAt(LocalDateTime.now())
-                .build();
+        Menuitem menuItem = menuitemService.getMenuItemById(item.getMenuItemId());
+
+        return new Order.OrderItem(
+                menuItem.getId(),
+                menuItem.getName(),
+                item.getQuantity(),
+                menuItem.getPrice()
+        );
+    }).toList();
+
+    double total = orderItems.stream()
+            .mapToDouble(i -> i.getPrice() * i.getQuantity())
+            .sum();
+
+    Order order = Order.builder()
+            .userId(request.getUserId())
+            .items(orderItems)
+            .totalPrice(total)
+            .status(Order.OrderStatus.PENDING)
+            .address(request.getAddress())
+            .createdAt(LocalDateTime.now())
+            .build();
 
 
-        User user = userRepository.findById(request.getUserId()).orElse(null);
+        User user = userService.getUserById(request.getUserId()).orElse(null);
         
         NotificationRequest req = new NotificationRequest();
 
@@ -78,7 +91,7 @@ public class OrderService {
     }
 
     public List<Map<String, Object>> getAllOrdersWithUsers() {
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAllByOrderByCreatedAtDesc();
         return orders.stream().map(order -> {
 
             Map<String, Object> result = new HashMap<>();
@@ -90,7 +103,7 @@ public class OrderService {
             result.put("address", order.getAddress());
             result.put("createdAt", order.getCreatedAt());
 
-            User user = userRepository.findById(order.getUserId()).orElse(null);
+            User user = userService.getUserById(order.getUserId()).orElse(null);
 
             result.put("userName", user.getName() != null ? user.getName() : "Unknown");
             result.put("phone", user.getPhone() != null ? user.getPhone() : "Unknown");
@@ -103,7 +116,7 @@ public class OrderService {
 
 
     public List<Order> getUserOrders(String userId) {
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
     public Order updateStatus(String orderId, Order.OrderStatus status) {
@@ -113,7 +126,7 @@ public class OrderService {
         order.setStatus(status);
         Order updatedOrder = orderRepository.save(order);
 
-        User user = userRepository.findById(order.getUserId()).orElse(null);
+        User user = userService.getUserById(order.getUserId()).orElse(null);
 
         NotificationRequest req = new NotificationRequest();
 

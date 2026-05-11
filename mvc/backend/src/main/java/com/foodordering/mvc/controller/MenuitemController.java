@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/menuitems")
+@RequestMapping("/api/menuitems")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class MenuitemController {

@@ -22,8 +22,8 @@ export default function Navbar({ setIsCartOpen }) {
 
         <nav className="hidden md:flex items-center gap-6">
           <Link to="/restaurants" className="hover:text-orange-500">
-    Restaurants
-  </Link>
+          Restaurants
+        </Link>
 
           
           {isCustomer ? <Link to="/orders" className="hover:text-orange-500">Orders</Link> : null}

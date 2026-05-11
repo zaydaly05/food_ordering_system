@@ -1,7 +1,7 @@
 export const getMenuByRestaurant = async (restaurantId) => {
 
   const response = await fetch(
-    `http://localhost:8080/menuitems/restaurant/${restaurantId}`
+    `http://localhost:8080/api/menuitems/restaurant/${restaurantId}`
   );
 
   return await response.json();
@@ -10,7 +10,7 @@ export const getMenuByRestaurant = async (restaurantId) => {
 export const getAllMenuItems = async () => {
 
   const response = await fetch(
-    "http://localhost:8080/menuitems"
+    "http://localhost:8080/api/menuitems"
   );
 
   return await response.json();
@@ -19,7 +19,7 @@ export const getAllMenuItems = async () => {
 export const addMenuItem = async (menuitem) => {
 
   const response = await fetch(
-    "http://localhost:8080/menuitems",
+    "http://localhost:8080/api/menuitems",
     {
       method: "POST",
       headers: {
@@ -35,7 +35,7 @@ export const addMenuItem = async (menuitem) => {
 export const deleteMenuItem = async (id) => {
 
   await fetch(
-    `http://localhost:8080/menuitems/${id}`,
+    `http://localhost:8080/api/menuitems/${id}`,
     {
       method: "DELETE"
     }
@@ -45,7 +45,7 @@ export const deleteMenuItem = async (id) => {
 export const updateMenuItem = async (id, menuitem) => {
 
   const response = await fetch(
-    `http://localhost:8080/menuitems/${id}`,
+    `http://localhost:8080/api/menuitems/${id}`,
     {
       method: "PUT",
       headers: {

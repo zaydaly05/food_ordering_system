@@ -165,6 +165,11 @@ return (
           key={r.id}
           className="bg-white p-5 rounded-lg shadow"
         >
+          <img
+            src={r.image}
+            alt={r.name}
+            className="w-full h-48 object-cover rounded mb-4"
+          />
 
           <h2 className="text-xl font-bold mb-2">
             {r.name}

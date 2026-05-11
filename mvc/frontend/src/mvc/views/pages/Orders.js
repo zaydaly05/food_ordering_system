@@ -59,7 +59,7 @@ export default function Orders() {
 
 							<div className="text-right">
 								<div className="font-bold text-orange-500">
-									${o.totalPrice}
+									{o.totalPrice} EGP
 								</div>
 								<div className="text-sm text-gray-600">
 									{o.status}
@@ -71,7 +71,7 @@ export default function Orders() {
 							{o.items?.map((it, idx) => (
 								<div key={idx} className="flex justify-between">
 									<span>{it.name}</span>
-									<span>${it.price}</span>
+									<span>{it.price} EGP</span>
 								</div>
 							))}
 						</div>

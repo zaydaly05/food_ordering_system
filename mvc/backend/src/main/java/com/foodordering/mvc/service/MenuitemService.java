@@ -36,4 +36,10 @@ public Menuitem updateMenuItem(
 
     return menuitemRepository.save(updatedMenuitem);
 }
+
+
+public Menuitem getMenuItemById(String id) {
+    return menuitemRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Menu item not found"));
+}
 }

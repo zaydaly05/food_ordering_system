@@ -19,7 +19,7 @@ import java.util.Optional;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
 
-    private static final String ADMIN_EMAIL = "admin@foodapp.demo";
+   
     private static final List<String> ADMIN_PERMISSIONS = List.of("MANAGE_PRODUCTS", "MANAGE_ORDERS", "VIEW_REPORTS");
 
     private final UserRepository userRepository;
@@ -148,6 +148,9 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+    public Optional<User> getUserById(String id) {
+        return userRepository.findById(id);
     }
 
     public User createUserByAdmin(String name, String email, String phone, String address, String role, String password) {
