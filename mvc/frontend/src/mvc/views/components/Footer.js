@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../models/context/AuthContext";
 
 export default function Footer() {
+
+  const { logout, isLoggedIn, openLogin, user } = useAuth();
+  
+  const isAdmin = user?.role === "ADMIN";
+  const isCustomer = user?.role === "CUSTOMER";
 
   return (
     <footer className="mt-12 border-t bg-white/60 backdrop-blur-sm z-20">
@@ -27,13 +33,13 @@ export default function Footer() {
           
         </div>
 
-        {/* Center (empty for now or future links) */}
-        <div className="flex flex-col items-start justify-center md:items-center">
+        
+        {isCustomer ? <div className="flex flex-col items-start justify-center md:items-center">
           <div className="font-semibold mb-2">Quick Links</div>
           <Link to="/" className="text-sm text-gray-600 hover:text-orange-500">Home</Link>
           <Link to="/restaurants" className="text-sm text-gray-600 hover:text-orange-500">Restaurants</Link>
           <Link to="/settings" className="text-sm text-gray-600 hover:text-orange-500">Settings</Link>
-        </div>
+        </div> : null}
 
         {/* Right section */}
         <div className="ml-auto text-right">

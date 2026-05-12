@@ -4,7 +4,7 @@ import com.foodordering.mvc.model.Order;
 import com.foodordering.mvc.model.User;
 import com.foodordering.mvc.notification.NotificationInterface;
 import com.foodordering.mvc.repository.OrderRepository;
-import com.foodordering.mvc.repository.UserRepository;
+
 import com.foodordering.mvc.DTO.CreateOrderRequest;
 import com.foodordering.mvc.DTO.NotificationRequest;
 
@@ -32,17 +32,20 @@ public class OrderService {
    
     
     private NotificationInterface orderEmail = new EmailService();
+
     public Order createOrder(CreateOrderRequest request) {
 
-    List<Order.OrderItem> orderItems = request.getItems().stream().map(item -> {
+    List<Order.OrderItem> orderItems = request.getItems().stream()
+    .map(item -> {
 
-        Menuitem menuItem = menuitemService.getMenuItemById(item.getMenuItemId());
+        Menuitem menuItem =
+            menuitemService.getMenuItemById(item.getProductId());
 
         return new Order.OrderItem(
-                menuItem.getId(),
-                menuItem.getName(),
-                item.getQuantity(),
-                menuItem.getPrice()
+            menuItem.getId(),
+            menuItem.getName(),
+            menuItem.getPrice(),
+            item.getQuantity()
         );
     }).toList();
 
