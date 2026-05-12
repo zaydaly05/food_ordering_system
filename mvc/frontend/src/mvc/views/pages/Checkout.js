@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../models/context/AuthContext";
+import { useOrders } from "../../models/context/OrdersContext";
 
 export default function Checkout() {
   const { cart, clearCart } = useCart();
@@ -11,6 +12,7 @@ export default function Checkout() {
   const [placing, setPlacing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("instapay");
   const [card, setCard] = useState({ number: "", name: "", exp: "", cvv: "" });
+  const { createOrder } = useOrders();
 
   const navigate = useNavigate();
   const { isLoggedIn, openLogin } = useAuth();
@@ -34,6 +36,8 @@ export default function Checkout() {
     (subtotal + serviceFee + vat + deliveryFee).toFixed(2)
   );
 
+  const { user } = useAuth();
+
   const placeOrder = async () => {
     if (!isLoggedIn) {
       openLogin();
@@ -43,41 +47,20 @@ export default function Checkout() {
     if (cart.length === 0) return toast.error("Your cart is empty");
     if (!address) return toast.error("Please enter an address");
 
-    if (paymentMethod === "credit") {
-      if (!card.number || !card.name || !card.exp || !card.cvv) {
-        return toast.error("Please fill card details");
-      }
-    }
-
     setPlacing(true);
 
     try {
-      const cartId = localStorage.getItem("currentCartId");
-
-      if (!cartId) throw new Error("No cart ID found");
-
-      let backendPaymentFormat = paymentMethod.toUpperCase();
-      if (backendPaymentFormat === "COD") backendPaymentFormat = "CASH";
-      if (backendPaymentFormat === "CREDIT") backendPaymentFormat = "VISA";
-
-      const response = await fetch(
-        `http://localhost:8080/api/cart/${cartId}/payment`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ paymentMethod: backendPaymentFormat }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to update payment");
-
-      await response.json();
+      const order = await createOrder({
+        userId: user?.id,   
+        items: cart,
+        address,
+        total,
+        paymentMethod,
+      });
 
       clearCart();
-      localStorage.removeItem("currentCartId");
-
-      toast.success("Order placed successfully!");
-      navigate("/orders");
+      toast.success("Order created!");
+      navigate(`/payment/${order.id}`);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -137,12 +120,12 @@ export default function Checkout() {
               <span>
                 {it.quantity || 1}x {it.name}
               </span>
-              <span>${(it.price * (it.quantity || 1)).toFixed(2)}</span>
+              <span>{(it.price * (it.quantity || 1)).toFixed(2)} EGP</span>
             </div>
           ))}
 
           <div className="mt-4 font-bold">
-            Total: ${total.toFixed(2)}
+            Total: {total.toFixed(2)} EGP
           </div>
         </div>
       </div>

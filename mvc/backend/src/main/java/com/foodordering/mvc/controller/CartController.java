@@ -1,10 +1,13 @@
 package com.foodordering.mvc.controller;
 
-import com.foodordering.mvc.DTO.PaymentRequest;
+
 import com.foodordering.mvc.model.Cart;
+import com.foodordering.mvc.model.CartItem;
 import com.foodordering.mvc.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/api/cart")
@@ -14,17 +17,33 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    // Save cart to database when Checkout is clicked
-    @PostMapping("/checkout")
-    public Cart checkout(@RequestBody Cart cart) {
-        return cartService.checkout(cart);
+    @PostMapping("/{userId}/add")
+    public Cart addToCart(
+            @PathVariable String userId,
+            @RequestBody CartItem item
+    ) {
+        return cartService.addToCart(userId, item);
     }
 
-    // Save payment method (CASH or VISA)
-    @PutMapping("/{cartId}/payment")
-    public Cart updatePaymentMethod(
-            @PathVariable String cartId,
-            @RequestBody PaymentRequest request) {
-        return cartService.updatePaymentMethod(cartId, request);
+    @PutMapping("/{userId}/update/{productId}")
+    public Cart updateQuantity(
+            @PathVariable String userId,
+            @PathVariable String productId,
+            @RequestParam int change
+    ) {
+        return cartService.updateQuantity(userId, productId, change);
+    }
+
+    @GetMapping("/{userId}")
+    public Cart getUserCart(@PathVariable String userId) {
+        return cartService.getUserCart(userId);
+    }
+
+    @DeleteMapping("/{userId}/item/{itemId}")
+    public Cart removeItem(
+            @PathVariable String userId,
+            @PathVariable String itemId
+    ) {
+        return cartService.removeItem(userId, itemId);
     }
 }

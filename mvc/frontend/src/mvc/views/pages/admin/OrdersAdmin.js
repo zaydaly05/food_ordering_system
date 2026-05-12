@@ -3,30 +3,34 @@ import toast from "react-hot-toast";
 import { useOrders } from "../../../models/context/OrdersContext.js";
 
 export default function OrdersAdmin() {
-  const { getAllOrders, UpdateOrderStatus } = useOrders();
-  const [orders, setOrders] = useState([]);
+  const { getAllOrders, updateOrderStatus } = useOrders();
+  const [orders, setOrders] = useState(() => {
+  const cached = localStorage.getItem("orders");
+  return cached ? JSON.parse(cached) : [];
+  });
   const [savingOrderId, setSavingOrderId] = useState(null);
 
   useEffect(() => {
-    const loadOrders = async () => {
-      try {
-        const dbOrders = await getAllOrders();
-        setOrders(dbOrders);
-      } catch (err) {
-        toast.error("Failed to load orders");
-      }
-    };
+  const loadOrders = async () => {
+    try {
+      const dbOrders = await getAllOrders();
+      setOrders(dbOrders);
+      localStorage.setItem("orders", JSON.stringify(dbOrders));
+    } catch (err) {
+      toast.error("Failed to load orders");
+    }
+  };
 
-    loadOrders();
-  }, [getAllOrders]);
+  loadOrders();
+}, []);
 
   const changeStatus = async (orderId, newStatus) => {
     try {
       setSavingOrderId(orderId);
-      await UpdateOrderStatus(orderId, newStatus);
+      await updateOrderStatus(orderId, newStatus);
       setOrders((prev) =>
         prev.map((o) =>
-          String(o.id) === String(orderId) ? { ...o, status: newStatus } : o
+          String(o.id || o._id) === String(orderId) ? { ...o, status: newStatus } : o
         )
       );
       toast.success("Order status updated");
@@ -47,14 +51,14 @@ export default function OrdersAdmin() {
         <div className="grid gap-5">
           {orders.map((o) => (
             <div
-              key={o.id}
+              key={o.id || o._id}
               className="bg-white rounded-2xl shadow-md border border-gray-100 p-5"
             >
               {/* Header */}
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h2 className="font-bold text-lg text-gray-800">
-                    Order #{o.id?.slice(-8)}
+                    Order #{o.id?.slice(-8) || o._id?.slice(-8)}
                   </h2>
 
                   <p className="text-sm text-gray-500">
@@ -127,8 +131,8 @@ export default function OrdersAdmin() {
 
                   <select
                     value={o.status}
-                    disabled={savingOrderId === o.id}
-                    onChange={(e) => changeStatus(o.id, e.target.value)}
+                    disabled={savingOrderId === o.id || savingOrderId === o._id}
+                    onChange={(e) => changeStatus(o.id || o._id, e.target.value)}
                     className="border rounded-lg px-3 py-2 text-sm"
                   >
                     <option value="PENDING">PENDING</option>

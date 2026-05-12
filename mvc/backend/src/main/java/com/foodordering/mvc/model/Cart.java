@@ -15,15 +15,13 @@ public class Cart {
     private String userId;
     private List<CartItem> items;
     private double totalPrice;
-    private String status;        // CHECKOUT
-    private String paymentMethod; // CASH or VISA
     private LocalDateTime createdAt;
 
     public Cart() {
         this.createdAt = LocalDateTime.now();
-        this.status = "CHECKOUT";
     }
 
+   
     public String getId() {
         return id;
     }
@@ -56,21 +54,7 @@ public class Cart {
         this.totalPrice = totalPrice;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
+  
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

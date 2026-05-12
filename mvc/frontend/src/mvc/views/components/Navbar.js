@@ -8,6 +8,12 @@ import toast from "react-hot-toast";
 export default function Navbar({ setIsCartOpen }) {
   const [open, setOpen] = useState(false);
   const { cart } = useCart();
+  
+  const cartCount = (cart || []).reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0
+  );
+
   const { logout, isLoggedIn, openLogin, user } = useAuth();
   const navigate = useNavigate();
   const isAdmin = user?.role === "ADMIN";
@@ -21,19 +27,15 @@ export default function Navbar({ setIsCartOpen }) {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">
-          <Link to="/restaurants" className="hover:text-orange-500">
-          Restaurants
-        </Link>
-
           
           {isCustomer ? <Link to="/orders" className="hover:text-orange-500">Orders</Link> : null}
-          {isCustomer ? <Link to="/checkout" className="hover:text-orange-500">Checkout</Link> : null}
+          {isCustomer ? <Link to="/restaurants" className="hover:text-orange-500">Restaurants</Link> : null}
           {isLoggedIn ? (
             <>
               {isCustomer ? <Link to="/profile" className="hover:text-orange-500">Profile</Link> : null}
               <Link to="/settings" className="hover:text-orange-500">Settings</Link>
               {isAdmin ? <Link to="/admin" className="hover:text-orange-500">Admin Panel</Link> : null}
-              <button onClick={() => { logout(); toast.success("Signed out"); navigate('/'); }} className="hover:text-orange-500">Sign out</button>
+              <button onClick={() => {logout();toast.success("Signed out");setTimeout(() => {navigate("/")}, 0);}}>Sign out</button>
             </>
           ) : null}
         </nav>
@@ -57,9 +59,11 @@ export default function Navbar({ setIsCartOpen }) {
               aria-label="Open cart"
             >
               <ShoppingCart className="cursor-pointer" />
-              {cart.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">{cart.length}</span>
-              )}
+             {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-xs px-2 h-5 flex items-center justify-center animate-bounce">
+                {cartCount}
+              </span>
+            )}
             </button>
           ) : null}
 
