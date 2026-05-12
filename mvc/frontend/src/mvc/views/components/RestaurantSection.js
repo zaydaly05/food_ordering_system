@@ -36,7 +36,7 @@ export default function RestaurantSection() {
           {restaurants.map((r) => (
 
             <Link
-              to={`/restaurants/${r.name.toLowerCase().replace(/\s/g, "")}`}
+              to={`/restaurants/${r.id}`}
               key={r.id}
             >
 

@@ -6,10 +6,12 @@ import {
   deleteMenuItem,
   updateMenuItem
 } from "../../../models/context/MenuitemContext";
+import { getAllRestaurants } from "../../../models/context/RestaurantContext";
 
 export default function MenuitemsAdmin() {
 
   const [menuitems, setMenuitems] = useState([]);
+  const [restaurants, setRestaurants] = useState([]);
 
   const [editingId, setEditingId] = useState(null);
 
@@ -24,6 +26,7 @@ export default function MenuitemsAdmin() {
 
   useEffect(() => {
     loadMenuitems();
+    loadRestaurants();
   }, []);
 
   const loadMenuitems = async () => {
@@ -38,6 +41,22 @@ export default function MenuitemsAdmin() {
       console.error(err);
     }
   };
+
+ const loadRestaurants = async () => {
+
+  try {
+
+    const data = await getAllRestaurants();
+
+    console.log(data);
+
+    setRestaurants(data);
+
+  } catch (err) {
+
+    console.error(err);
+  }
+};
 
   const handleChange = (e) => {
 
@@ -159,21 +178,20 @@ export default function MenuitemsAdmin() {
           onChange={handleChange}
           className="border p-3 rounded"
         >
-          <option value="">
-            Select Restaurant
-          </option>
 
-          <option value="mcdonals">
-            McDonalds
-          </option>
+        <option value="">
+          Select Restaurant
+        </option>
+         {restaurants.map((restaurant, index) => (
 
-          <option value="kfc">
-            KFC
-          </option>
+        <option
+          key={restaurant.id }
+          value={restaurant.id}
+        >
+          {restaurant.name}
+        </option>
 
-          <option value="papajohns">
-            Papa Johns
-          </option>
+))}
         </select>
 
         <button
@@ -211,7 +229,7 @@ export default function MenuitemsAdmin() {
               </p>
 
               <p className="text-orange-500 font-bold mt-4">
-                ${item.price}
+                {item.price} EGP
               </p>
 
               <div className="flex gap-2 mt-4">

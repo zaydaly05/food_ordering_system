@@ -1,3 +1,6 @@
+
+
+
 const BASE_URL = "http://localhost:8080/api/restaurants";
 
 // GET ALL
@@ -6,6 +9,16 @@ export const getAllRestaurants = async () => {
 
   if (!response.ok) {
     throw new Error("Failed to fetch restaurants");
+  }
+
+  return response.json();
+};
+
+export const getRestaurantById = async (id) => {
+  const response = await fetch(`${BASE_URL}/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch restaurant");
   }
 
   return response.json();
