@@ -2,23 +2,47 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getMenuByRestaurant } from "../../models/context/MenuitemContext";
 import { useCart } from "../../models/context/CartContext";
+import { getRestaurantById }from "../../models/context/RestaurantContext";
 
 export default function RestaurantDetails() {
   const { id } = useParams();
   const [foods, setFoods] = useState([]);
+  const [restaurant, setRestaurant] = useState(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
+
     const loadMenu = async () => {
-      const data = await getMenuByRestaurant(id);
-      setFoods(data);
+
+      try {
+
+        const data = await getMenuByRestaurant(id);
+
+        setFoods(data);
+        console.log("restaurant page id =", id);
+
+      } catch (err) {
+        console.error(err);
+      }
     };
+
     loadMenu();
+
   }, [id]);
+    const loadRestaurant = async () => {
+      try {
+        const data = await getRestaurantById(id);
+        setRestaurant(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+  loadRestaurant();
+
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">{id} Menu</h1>
+      <h1 className="text-3xl font-bold mb-6">{restaurant?.name} Menu</h1>
 
       <div className="grid md:grid-cols-3 gap-6">
         {foods.map((food) => (
@@ -26,7 +50,7 @@ export default function RestaurantDetails() {
             <img src={food.image} className="h-40 w-full object-cover" />
             <h2 className="font-bold mt-2">{food.name}</h2>
             <p>{food.description}</p>
-            <p className="text-orange-500 font-bold">${food.price}</p>
+            <p className="text-orange-500 font-bold">{food.price} EGP</p>
 
             <button
               onClick={() => addToCart(food)}

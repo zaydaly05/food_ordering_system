@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../models/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginModal() {
   const { login, signup, closeLogin, loginMode, showLogin } = useAuth();
-  const [mode, setMode] = useState("login"); // 'login' or 'signup'
+  const [mode, setMode] = useState("login"); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (showLogin) setMode(loginMode || "login");
@@ -22,26 +24,28 @@ export default function LoginModal() {
   const [address, setAddress] = useState("");
 
   const submitLogin = async (e) => {
-    e.preventDefault();
-    try {
-      await login({ email, password });
-      toast.success("Logged in");
-      closeLogin();
-    } catch (err) {
-      toast.error("Login failed. Please check backend and MongoDB.");
-    }
-  };
+  e.preventDefault();
+  try {
+    await login({ email, password });
+    toast.success("Logged in");
+    closeLogin();
+    navigate("/"); 
+  } catch (err) {
+    toast.error("Login failed. Please check backend and MongoDB.");
+  }
+};
 
   const submitSignup = async (e) => {
-    e.preventDefault();
-    try {
-      await signup({ name, email, password, phone, address });
-      toast.success("Account created and signed in");
-      closeLogin();
-    } catch (err) {
-      toast.error("Signup failed. Please check backend and MongoDB.");
-    }
-  };
+  e.preventDefault();
+  try {
+    await signup({ name, email, password, phone, address });
+    toast.success("Account created and signed in");
+    closeLogin();
+    navigate("/"); 
+  } catch (err) {
+    toast.error("Signup failed. Please check backend and MongoDB.");
+  }
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">

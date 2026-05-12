@@ -1,11 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../models/context/AuthContext";
 
 
 
 export default function Landing() {
 
   const [backendStatus, setBackendStatus] = React.useState("checking");
+  const { user } = useAuth();
+  const isCustomer = user?.role === "CUSTOMER";
 
   React.useEffect(() => {
     fetch("http://localhost:8080/api/test")
@@ -55,12 +58,14 @@ export default function Landing() {
 
             <div className="mt-6 flex gap-3">
 
-              <Link
-                to="/restaurants"
-                className="bg-orange-500 text-white px-4 py-2 rounded"
-              >
-                View Restaurants
-              </Link>
+              {isCustomer && (
+                <Link
+                  to="/restaurants"
+                  className="bg-orange-500 text-white px-4 py-2 rounded"
+                >
+                  View Restaurants
+                </Link>
+              )}
 
               <Link
                 to="/about"

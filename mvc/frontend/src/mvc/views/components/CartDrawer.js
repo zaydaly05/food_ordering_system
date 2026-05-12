@@ -2,13 +2,15 @@ import { useCart } from "../../models/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2 } from "lucide-react";
 import { useAuth } from "../../models/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function CartDrawer({ isOpen, setIsOpen }) {
-  const { cart, removeFromCart } = useCart();
+  const { cart, removeFromCart, updateQuantity  } = useCart();
   const { isLoggedIn, openLogin } = useAuth();
+  const navigate = useNavigate();
 
   const total = cart.reduce(
-    (sum, item) => sum + item.price * (item.quantity || 1),
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
 
@@ -30,25 +32,51 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
             {cart.length === 0 ? (
               <div>Your cart is empty</div>
             ) : (
-              cart.map((item) => (
-                <div key={item.id} className="flex justify-between mb-3">
-                  <div>
-                    <div>{item.name}</div>
-                    <div>${item.price}</div>
-                  </div>
+             cart.map((item) => (
+            <div key={item.productId} className="flex justify-between mb-3">
+
+              <div>
+                <div>{item.name}</div>
+
+                <div className="text-sm text-gray-600">
+                  {item.price} EGP
+                </div>
+
+                
+                <div className="flex items-center gap-2 mt-2">
 
                   <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-red-500"
+                    onClick={() => updateQuantity(item.productId, -1)}
+                    className="px-2 bg-gray-200 rounded"
                   >
-                    <Trash2 />
+                    -
                   </button>
+
+                  <span>{item.quantity}</span>
+
+                  <button
+                    onClick={() => updateQuantity(item.productId, 1)}
+                    className="px-2 bg-gray-200 rounded"
+                  >
+                    +
+                  </button>
+
                 </div>
-              ))
+              </div>
+
+              <button
+                onClick={() => removeFromCart(item.productId)}
+                className="text-red-500"
+              >
+                <Trash2 />
+              </button>
+
+            </div>
+          ))
             )}
 
             <div className="mt-4 font-bold">
-              Total: ${total.toFixed(2)}
+              Total: {total.toFixed(2)} EGP
             </div>
 
             <button
@@ -57,6 +85,8 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                   openLogin();
                   return;
                 }
+                navigate('/checkout');
+                setIsOpen(false);
               }}
               className="w-full mt-4 bg-orange-500 text-white py-2 rounded"
             >

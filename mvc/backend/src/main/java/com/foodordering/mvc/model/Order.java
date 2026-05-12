@@ -32,10 +32,10 @@ public class Order {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderItem {
-        private String MenuItemId;
+        private String productId;
         private String name;
-        private int quantity;
         private double price;
+        private int quantity;
     }
 
 

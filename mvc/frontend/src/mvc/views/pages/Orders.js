@@ -9,24 +9,20 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        console.log("USER ID:", user?.id);
+  const fetchOrders = async () => {
+    try {
+      if (!user?.id) return; // ✅ safety guard
 
-        const data = await getUserOrders(user.id);
-        console.log("ORDERS:", data);
+      const data = await getUserOrders(user.id);
+      setOrders(data);
+    } catch (err) {
+      console.error("ERROR:", err);
+    }
+  };
 
-        setOrders(data);
-      } catch (err) {
-        console.error("ERROR:", err);
-      }
-    };
-
-    if (!isAuthReady) return;
-    if (!user?.id) return;
-
-    fetchOrders();
-  }, [isAuthReady, user?.id, getUserOrders]);
+  if (!isAuthReady) return;
+  fetchOrders();
+}, [isAuthReady, user?.id]);
 
 
 	if (orders.length === 0) {
