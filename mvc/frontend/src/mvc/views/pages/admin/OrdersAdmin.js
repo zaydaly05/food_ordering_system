@@ -11,35 +11,50 @@ export default function OrdersAdmin() {
   const [savingOrderId, setSavingOrderId] = useState(null);
 
   useEffect(() => {
-  const loadOrders = async () => {
-    try {
-      const dbOrders = await getAllOrders();
-      setOrders(dbOrders);
-      localStorage.setItem("orders", JSON.stringify(dbOrders));
-    } catch (err) {
-      toast.error("Failed to load orders");
-    }
-  };
+    const loadOrders = async () => {
+      try {
+        const dbOrders = await getAllOrders();
 
-  loadOrders();
-}, []);
+        setOrders(dbOrders);
+
+        localStorage.setItem("orders", JSON.stringify(dbOrders));
+      } catch (err) {
+        toast.error("Failed to load orders");
+      }
+    };
+
+    loadOrders();
+  }, [getAllOrders]);
 
   const changeStatus = async (orderId, newStatus) => {
-    try {
-      setSavingOrderId(orderId);
-      await updateOrderStatus(orderId, newStatus);
-      setOrders((prev) =>
-        prev.map((o) =>
-          String(o.id || o._id) === String(orderId) ? { ...o, status: newStatus } : o
-        )
-      );
-      toast.success("Order status updated");
-    } catch (err) {
-      toast.error("Failed to update order status");
-    } finally {
-      setSavingOrderId(null);
-    }
-  };
+
+  const previousOrders = orders;
+  const updatedOrders = orders.map((o) =>
+    String(o.id || o._id) === String(orderId)
+      ? { ...o, status: newStatus }
+      : o
+  );
+
+  setOrders(updatedOrders);
+
+  localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+  try {
+    setSavingOrderId(orderId);
+
+    await updateOrderStatus(orderId, newStatus);
+
+    toast.success("Order status updated");
+  } catch (err) {
+    // Rollback if API fails
+    setOrders(previousOrders);
+    localStorage.setItem("orders", JSON.stringify(previousOrders));
+
+    toast.error("Failed to update order status");
+  } finally {
+    setSavingOrderId(null);
+  }
+};
 
   return (
     <div className="p-6">
