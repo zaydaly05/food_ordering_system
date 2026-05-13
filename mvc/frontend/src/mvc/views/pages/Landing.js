@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../models/context/AuthContext";
+import HeroImageSlider from "../components/HeroImageSlider";
+import { heroSliderImages } from "../../../assets/slider/sliderImages";
 
 
 
@@ -42,26 +44,34 @@ export default function Landing() {
 
       </div>
 
-      <section className="hero-animated p-6 rounded-lg mb-8 bg-gradient-to-r from-orange-200 to-orange-600">
+      <section className="hero-animated relative overflow-hidden p-6 rounded-lg mb-8 bg-gradient-to-r from-orange-100 via-orange-50 to-white">
 
-        <div className="grid md:grid-cols-2 gap-6 items-center">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Cpath d='M30 5l5 15h15l-12 9 5 15-13-10-13 10 5-15-12-9h15z' fill='%230a1629'/%3E%3C/svg%3E\")",
+          }}
+        />
 
-          <div className="p-4">
+        <div className="relative grid md:grid-cols-2 gap-8 items-center">
 
-            <h1 className="text-4xl font-extrabold text-slate-900">
+          <div className="p-2 md:p-4">
+
+            <h1 className="text-4xl font-extrabold text-[#0a1629]">
               Welcome to FoodApp
             </h1>
 
-            <p className="mt-4 text-slate-800">
+            <p className="mt-4 text-slate-600">
               Fresh, delicious meals prepared with care.
             </p>
 
-            <div className="mt-6 flex gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
 
               {isCustomer && (
                 <Link
                   to="/restaurants"
-                  className="bg-orange-500 text-white px-4 py-2 rounded"
+                  className="rounded-lg bg-[#f57c24] px-5 py-2.5 font-medium text-white shadow-sm transition hover:bg-[#e56d18]"
                 >
                   View Restaurants
                 </Link>
@@ -69,7 +79,7 @@ export default function Landing() {
 
               <Link
                 to="/about"
-                className="px-4 py-2 border rounded"
+                className="rounded-lg border border-slate-300 bg-white px-5 py-2.5 font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
               >
                 About Us
               </Link>
@@ -77,6 +87,8 @@ export default function Landing() {
             </div>
 
           </div>
+
+          <HeroImageSlider slides={heroSliderImages} intervalMs={3000} />
 
         </div>
 
