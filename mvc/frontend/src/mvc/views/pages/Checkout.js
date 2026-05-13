@@ -2,20 +2,23 @@ import toast from "react-hot-toast";
 import { useCart } from "../../models/context/CartContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useAuth } from "../../models/context/AuthContext";
-import { useOrders } from "../../models/context/OrdersContext";
+import { usePayment } from "../../models/context/PaymentContext";
+import { useOrders } from "../../models/context/OrdersContext.js";
+
+
 
 export default function Checkout() {
+  const { createOrder,getAllOrders, updateOrderStatus } = useOrders();
   const { cart, clearCart } = useCart();
+  const { isLoggedIn, openLogin, user } = useAuth();
+  const { createPayment, updatePaymentStatus } = usePayment();
+  const navigate = useNavigate();
+
   const [address, setAddress] = useState("");
   const [placing, setPlacing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("instapay");
+  const [paymentMethod, setPaymentMethod] = useState("INSTAPAY");
   const [card, setCard] = useState({ number: "", name: "", exp: "", cvv: "" });
-  const { createOrder } = useOrders();
-
-  const navigate = useNavigate();
-  const { isLoggedIn, openLogin } = useAuth();
 
   const subtotal = cart.reduce(
     (s, it) => s + it.price * (it.quantity || 1),
@@ -24,19 +27,18 @@ export default function Checkout() {
 
   const serviceFeeRate = 0.05;
   const vatRate = 0.1;
-  const deliveryFeeFixed = 3;
+  const deliveryFeeFixed = 0.04;
 
   const serviceFee = Number((subtotal * serviceFeeRate).toFixed(2));
   const vat = Number(((subtotal + serviceFee) * vatRate).toFixed(2));
 
-  const isDelivery = address.trim().length > 0;
-  const deliveryFee = isDelivery ? deliveryFeeFixed : 0;
+  const deliveryFee = Number((subtotal * deliveryFeeFixed).toFixed(2));
 
   const total = Number(
     (subtotal + serviceFee + vat + deliveryFee).toFixed(2)
   );
 
-  const { user } = useAuth();
+  
 
   const placeOrder = async () => {
     if (!isLoggedIn) {
@@ -46,6 +48,10 @@ export default function Checkout() {
 
     if (cart.length === 0) return toast.error("Your cart is empty");
     if (!address) return toast.error("Please enter an address");
+     if (paymentMethod === "VISA") {
+      if (!card.number || !card.name || !card.exp || !card.cvv)
+        return toast.error("Please fill in all card details");
+    }
 
     setPlacing(true);
 
@@ -58,9 +64,19 @@ export default function Checkout() {
         paymentMethod,
       });
 
+
+
+
+
+      // STEP 2: Create Payment — totalAmount comes from Order on the backend
+      const payment = await createPayment(order.id, paymentMethod);
+
+      // STEP 3: Mark payment as COMPLETED (simulated payment processing)
+      await updatePaymentStatus(payment.id, "COMPLETED");
+      
       clearCart();
       toast.success("Order created!");
-      navigate(`/payment/${order.id}`);
+      navigate(`/payment/success?orderId=${order.id}&paymentId=${payment.id}`);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -123,7 +139,22 @@ export default function Checkout() {
               <span>{(it.price * (it.quantity || 1)).toFixed(2)} EGP</span>
             </div>
           ))}
+           <div className="flex justify-between text-sm text-gray-500 mt-2">
+            <span>Service Fee (5%)</span>
+            <span>{serviceFee.toFixed(2)} EGP</span>
+          </div>
 
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>VAT (10%)</span>
+            <span>{vat.toFixed(2)} EGP</span>
+          </div>
+
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>Delivery Fee (4%)</span>
+            <span>{deliveryFee.toFixed(2)} EGP</span>
+          </div>
+
+          <hr className="my-2" />
           <div className="mt-4 font-bold">
             Total: {total.toFixed(2)} EGP
           </div>

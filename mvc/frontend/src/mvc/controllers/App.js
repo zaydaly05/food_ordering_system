@@ -36,6 +36,13 @@ import Restaurants from "../views/pages/Restaurant";
 import RestaurantDetails from "../views/pages/RestaurantDetails";
 
 import MenuitemsAdmin from "../views/pages/admin/MenuitemsAdmin";
+import PaymentsAdmin from "../views/pages/admin/PaymentsAdmin";
+import DeliveriesAdmin from "../views/pages/admin/DeliveriesAdmin";
+import PaymentSuccess from "../views/pages/PaymentSuccess";
+import PaymentFailure from "../views/pages/PaymentFailure";
+import DeliveryTracking from "../views/pages/DeliveryTracking";
+import { PaymentProvider } from "../models/context/PaymentContext";
+import { DeliveryProvider } from "../models/context/DeliveryContext";
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -49,6 +56,8 @@ export default function App() {
     <AuthProvider>
       <OrdersProvider>
         <CartProvider>
+          <PaymentProvider>
+            <DeliveryProvider>
           <BrowserRouter>
 
             <div className="min-h-screen flex flex-col relative z-10">
@@ -161,6 +170,29 @@ export default function App() {
   path="/restaurants/:id"
   element={<RestaurantDetails />}
 />
+                  <Route path="/payment/success" element={
+                    <RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}>
+                      <PaymentSuccess />
+                    </RequireAuth>
+                  } />
+                  <Route path="/payment/failure" element={<PaymentFailure />} />
+                  <Route path="/delivery/tracking" element={
+                    <RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}>
+                      <DeliveryTracking />
+                    </RequireAuth>
+                  } />
+
+                  <Route path="/admin/payments" element={
+                    <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+                      <AdminLayout><PaymentsAdmin /></AdminLayout>
+                    </RequireAuth>
+                  } />
+                  <Route path="/admin/deliveries" element={
+                    <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
+                      <AdminLayout><DeliveriesAdmin /></AdminLayout>
+                    </RequireAuth>
+                  } />
+
 <Route path="*" element={<NotFound />} />
 
                 </Routes>
@@ -172,6 +204,8 @@ export default function App() {
             </div>
 
           </BrowserRouter>
+            </DeliveryProvider>
+          </PaymentProvider>
         </CartProvider>
       </OrdersProvider>
     </AuthProvider>
