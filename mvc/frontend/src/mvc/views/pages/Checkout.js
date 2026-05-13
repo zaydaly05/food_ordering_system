@@ -24,13 +24,12 @@ export default function Checkout() {
 
   const serviceFeeRate = 0.05;
   const vatRate = 0.1;
-  const deliveryFeeFixed = 3;
+  const deliveryFeeFixed = 0.04;
 
   const serviceFee = Number((subtotal * serviceFeeRate).toFixed(2));
   const vat = Number(((subtotal + serviceFee) * vatRate).toFixed(2));
 
-  const isDelivery = address.trim().length > 0;
-  const deliveryFee = isDelivery ? deliveryFeeFixed : 0;
+  const deliveryFee = Number((subtotal * deliveryFeeFixed).toFixed(2));
 
   const total = Number(
     (subtotal + serviceFee + vat + deliveryFee).toFixed(2)
@@ -123,7 +122,22 @@ export default function Checkout() {
               <span>{(it.price * (it.quantity || 1)).toFixed(2)} EGP</span>
             </div>
           ))}
+           <div className="flex justify-between text-sm text-gray-500 mt-2">
+            <span>Service Fee (5%)</span>
+            <span>{serviceFee.toFixed(2)} EGP</span>
+          </div>
 
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>VAT (10%)</span>
+            <span>{vat.toFixed(2)} EGP</span>
+          </div>
+
+          <div className="flex justify-between text-sm text-gray-500">
+            <span>Delivery Fee (4%)</span>
+            <span>{deliveryFee.toFixed(2)} EGP</span>
+          </div>
+
+          <hr className="my-2" />
           <div className="mt-4 font-bold">
             Total: {total.toFixed(2)} EGP
           </div>
