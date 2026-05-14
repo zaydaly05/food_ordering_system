@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { useAuth } from "./AuthContext";
 import toast from "react-hot-toast";
 
@@ -26,9 +26,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    if (user) loadCart();
-  }, [user]);
+ 
 
  
 

@@ -123,7 +123,7 @@ export default function Navbar({ setIsCartOpen }) {
           )}
 
           {/* Cart */}
-          {!isAdmin ? (
+          {isCustomer ? (
             <button
               className="relative"
               onClick={() => setIsCartOpen(true)}
