@@ -5,6 +5,7 @@ export default function Footer() {
   const { user } = useAuth();
 
   const isCustomer = user?.role === "CUSTOMER";
+  const isAdmin = user?.role === "ADMIN";
 
   return (
     <footer className="mt-12 border-t bg-white dark:bg-slate-950 dark:border-slate-800 backdrop-blur-sm z-20">
@@ -33,7 +34,7 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-        {isCustomer ? (
+        
           <div className="flex flex-col items-start justify-center md:items-center">
             <div className="font-semibold text-black dark:text-white mb-2">
               Quick Links
@@ -43,15 +44,23 @@ export default function Footer() {
               Home
             </Link>
 
-            <Link to="/restaurants" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500">
-              Restaurants
-            </Link>
+            {isCustomer && (
+              <Link to="/restaurants" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500">
+                Restaurants
+              </Link>
+            )}
 
             <Link to="/settings" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500">
               Settings
             </Link>
+
+            {isAdmin && (
+              <Link to="/admin" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500">
+                Admin Panel
+              </Link>
+            )}
           </div>
-        ) : null}
+        
 
         {/* Right section */}
         <div className="ml-auto text-right">
