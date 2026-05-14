@@ -57,69 +57,98 @@ export default function AdminUsersPanel() {
     setNewUser((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleCreate = async () => {
-    if (!newUser.email.trim() || !newUser.password.trim()) {
-      toast.error("Email and password are required");
-      return;
+const handleCreate = async () => {
+  if (!newUser.email.trim() || !newUser.password.trim()) {
+    toast.error("Email and password are required");
+    return;
+  }
+
+  // CHECK IF EMAIL EXISTS
+  const emailExists = users.some(
+    (u) => u.email.toLowerCase() === newUser.email.trim().toLowerCase()
+  );
+
+  if (emailExists) {
+    toast.error("Email already exists");
+    return;
+  }
+
+  try {
+    setSavingUserId("new");
+
+    const created = await createUserByAdmin({
+      name: newUser.name || "",
+      email: newUser.email || "",
+      phone: newUser.phone || "",
+      address: newUser.address || "",
+      role: newUser.role || USER_ROLES.CUSTOMER,
+      password: newUser.password,
+    });
+
+    setUsers((prev) => [{ ...created, password: "" }, ...prev]);
+
+    setNewUser({
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+      address: "",
+      role: USER_ROLES.CUSTOMER,
+    });
+
+    toast.success("User created");
+  } catch (err) {
+    toast.error(err.message || "Failed to create user");
+  } finally {
+    setSavingUserId(null);
+  }
+};
+
+const handleSave = async (targetUser) => {
+  // CHECK IF EMAIL EXISTS FOR ANOTHER USER
+  const emailExists = users.some(
+    (u) =>
+      String(u.id) !== String(targetUser.id) &&
+      u.email.toLowerCase() === targetUser.email.trim().toLowerCase()
+  );
+
+  if (emailExists) {
+    toast.error("Email already exists");
+    return;
+  }
+
+  try {
+    setSavingUserId(targetUser.id);
+
+    const payload = {
+      name: targetUser.name || "",
+      email: targetUser.email || "",
+      phone: targetUser.phone || "",
+      address: targetUser.address || "",
+      role: targetUser.role || USER_ROLES.CUSTOMER,
+    };
+
+    if ((targetUser.password || "").trim()) {
+      payload.password = targetUser.password.trim();
     }
-    try {
-      setSavingUserId("new");
-      const created = await createUserByAdmin({
-        name: newUser.name || "",
-        email: newUser.email || "",
-        phone: newUser.phone || "",
-        address: newUser.address || "",
-        role: newUser.role || USER_ROLES.CUSTOMER,
-        password: newUser.password,
-      });
-      setUsers((prev) => [{ ...created, password: "" }, ...prev]);
-      setNewUser({
-        name: "",
-        email: "",
-        password: "",
-        phone: "",
-        address: "",
-        role: USER_ROLES.CUSTOMER,
-      });
-      toast.success("User created");
-    } catch (err) {
-      toast.error(err.message || "Failed to create user");
-    } finally {
-      setSavingUserId(null);
-    }
-  };
 
-  const handleSave = async (targetUser) => {
-    try {
-      setSavingUserId(targetUser.id);
-      const payload = {
-        name: targetUser.name || "",
-        email: targetUser.email || "",
-        phone: targetUser.phone || "",
-        address: targetUser.address || "",
-        role: targetUser.role || USER_ROLES.CUSTOMER,
-      };
+    const updated = await updateUserById(targetUser.id, payload);
 
-      if ((targetUser.password || "").trim()) {
-        payload.password = targetUser.password.trim();
-      }
+    setUsers((prev) =>
+      prev.map((u) =>
+        String(u.id) === String(targetUser.id)
+          ? { ...updated, password: "" }
+          : u
+      )
+    );
 
-      const updated = await updateUserById(targetUser.id, payload);
-      setUsers((prev) =>
-        prev.map((u) =>
-          String(u.id) === String(targetUser.id)
-            ? { ...updated, password: "" }
-            : u
-        )
-      );
-      toast.success("User updated");
-    } catch (err) {
-      toast.error(err.message || "Failed to update user");
-    } finally {
-      setSavingUserId(null);
-    }
-  };
-
+    toast.success("User updated");
+  } catch (err) {
+    toast.error(err.message || "Failed to update user");
+  } finally {
+    setSavingUserId(null);
+  }
+};
   const handleDelete = async (targetUser) => {
     if (String(targetUser.id) === String(user?.id)) return;
     const shouldDelete = window.confirm(`Delete user ${targetUser.email || targetUser.name}?`);

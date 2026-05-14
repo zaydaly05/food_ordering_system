@@ -26,8 +26,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/**").permitAll()
                 .anyRequest().permitAll()
             )
-            .formLogin(form -> form.disable())   // 🚨 THIS LINE IS IMPORTANT
-            .httpBasic(basic -> basic.disable()); // 🚨 ALSO IMPORTANT
+            .formLogin(form -> form.disable())   
+            .httpBasic(basic -> basic.disable());
 
         return http.build();
     }
