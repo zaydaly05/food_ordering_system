@@ -115,161 +115,153 @@ export default function MenuitemsAdmin() {
     }
   };
 
-  return (
-    <div className="p-6 max-w-6xl mx-auto">
+ return (
+  <div className="p-6 max-w-6xl mx-auto bg-gray-100 dark:bg-slate-950 min-h-screen text-black dark:text-white">
 
-      <h1 className="text-3xl font-bold mb-6">
-        Menu Management
-      </h1>
+    <h1 className="text-3xl font-bold mb-6">
+      Menu Management
+    </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
+    {/* FORM */}
+    <form
+      onSubmit={handleSubmit}
+      className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
+    >
+
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={form.name}
+        onChange={handleChange}
+        className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        type="number"
+        name="price"
+        placeholder="Price"
+        value={form.price}
+        onChange={handleChange}
+        className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        type="text"
+        name="description"
+        placeholder="Description"
+        value={form.description}
+        onChange={handleChange}
+        className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        type="text"
+        name="image"
+        placeholder="Image URL"
+        value={form.image}
+        onChange={handleChange}
+        className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        type="text"
+        name="category"
+        placeholder="Category"
+        value={form.category}
+        onChange={handleChange}
+        className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <select
+        name="restaurantId"
+        value={form.restaurantId}
+        onChange={handleChange}
+        className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
       >
+        <option value="">Select Restaurant</option>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange}
-          className="border p-3 rounded"
-        />
+        {restaurants.map((restaurant) => (
+          <option key={restaurant.id} value={restaurant.id}>
+            {restaurant.name}
+          </option>
+        ))}
+      </select>
 
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={form.price}
-          onChange={handleChange}
-          className="border p-3 rounded"
-        />
+      <button
+        type="submit"
+        className="bg-orange-500 text-white rounded p-3 hover:bg-orange-600"
+      >
+        {editingId ? "Update Menu Item" : "Add Menu Item"}
+      </button>
 
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="border p-3 rounded"
-        />
+    </form>
 
-        <input
-          type="text"
-          name="image"
-          placeholder="Image URL"
-          value={form.image}
-          onChange={handleChange}
-          className="border p-3 rounded"
-        />
+    {/* MENU GRID */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <input
-          type="text"
-          name="category"
-          placeholder="Category"
-          value={form.category}
-          onChange={handleChange}
-          className="border p-3 rounded"
-        />
-
-        <select
-          name="restaurantId"
-          value={form.restaurantId}
-          onChange={handleChange}
-          className="border p-3 rounded"
+      {menuitems.map((item) => (
+        <div
+          key={item.id}
+          className="bg-white dark:bg-slate-900 rounded-xl shadow overflow-hidden"
         >
 
-        <option value="">
-          Select Restaurant
-        </option>
-         {restaurants.map((restaurant, index) => (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-52 object-cover"
+          />
 
-        <option
-          key={restaurant.id }
-          value={restaurant.id}
-        >
-          {restaurant.name}
-        </option>
+          <div className="p-5">
 
-))}
-        </select>
+            <h2 className="text-xl font-bold">
+              {item.name}
+            </h2>
 
-        <button
-          type="submit"
-          className="bg-orange-500 text-white rounded p-3 hover:bg-orange-600"
-        >
-          {editingId ? "Update Menu Item" : "Add Menu Item"}
-        </button>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              {item.description}
+            </p>
 
-      </form>
+            <p className="text-orange-500 font-bold mt-4">
+              {item.price} EGP
+            </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex gap-2 mt-4">
 
-        {menuitems.map((item) => (
+              <button
+                onClick={() => handleDelete(item.id)}
+                className="bg-red-500 text-white px-4 py-2 rounded"
+              >
+                Delete
+              </button>
 
-          <div
-            key={item.id}
-            className="bg-white rounded-xl shadow overflow-hidden"
-          >
+              <button
+                onClick={() => {
+                  setForm({
+                    name: item.name,
+                    price: item.price,
+                    description: item.description,
+                    image: item.image,
+                    category: item.category,
+                    restaurantId: item.restaurantId
+                  });
 
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-full h-52 object-cover"
-            />
-
-            <div className="p-5">
-
-              <h2 className="text-xl font-bold">
-                {item.name}
-              </h2>
-
-              <p className="text-gray-600 mt-2">
-                {item.description}
-              </p>
-
-              <p className="text-orange-500 font-bold mt-4">
-                {item.price} EGP
-              </p>
-
-              <div className="flex gap-2 mt-4">
-
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded"
-                >
-                  Delete
-                </button>
-
-                <button
-                  onClick={() => {
-
-                    setForm({
-                      name: item.name,
-                      price: item.price,
-                      description: item.description,
-                      image: item.image,
-                      category: item.category,
-                      restaurantId: item.restaurantId
-                    });
-
-                    setEditingId(item.id);
-                  }}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                  Edit
-                </button>
-
-              </div>
+                  setEditingId(item.id);
+                }}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Edit
+              </button>
 
             </div>
 
           </div>
 
-        ))}
-
-      </div>
+        </div>
+      ))}
 
     </div>
-  );
+
+  </div>
+);
 }

@@ -61,4 +61,10 @@ public class PaymentService {
     public List<Payment> getAllPayments() {
         return paymentRepository.findAllByOrderByTransactionDateDesc();
     }
+    // Delete a payment by ID
+    public void deletePayment(String paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
+        paymentRepository.delete(payment);
+    }
 }

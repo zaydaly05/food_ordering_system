@@ -19,34 +19,73 @@ export default function Profile() {
     }
   };
 
-  return (
-    <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">My Profile</h1>
+ return (
+  <motion.main
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="p-6 max-w-3xl mx-auto min-h-screen bg-gray-100 dark:bg-slate-950 text-black dark:text-white"
+  >
+    <h1 className="text-2xl font-bold mb-4">
+      My Profile
+    </h1>
 
-      <form onSubmit={save} className="bg-white rounded shadow p-4 flex flex-col gap-3">
-        <label className="text-sm">User ID</label>
-        <input value={user?.id || ""} disabled className="border p-2 bg-gray-100" />
+    <form
+      onSubmit={save}
+      className="bg-white dark:bg-slate-900 rounded shadow p-4 flex flex-col gap-3"
+    >
+      <label className="text-sm">User ID</label>
+      <input
+        value={user?.id || ""}
+        disabled
+        className="border p-2 bg-gray-100 dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
 
-        <label className="text-sm">Role</label>
-        <input value={user?.role || ""} disabled className="border p-2 bg-gray-100" />
+      <label className="text-sm">Role</label>
+      <input
+        value={user?.role || ""}
+        disabled
+        className="border p-2 bg-gray-100 dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
 
-        <label className="text-sm">Email</label>
-        <input value={user?.email || ""} disabled className="border p-2 bg-gray-100" />
+      <label className="text-sm">Email</label>
+      <input
+        value={user?.email || ""}
+        disabled
+        className="border p-2 bg-gray-100 dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
 
-        <label className="text-sm">Full name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} className="border p-2" />
+      <label className="text-sm">Full name</label>
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="border p-2 bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
 
-        <label className="text-sm">Phone</label>
-        <input value={phone} onChange={(e) => setPhone(e.target.value)} className="border p-2" />
+      <label className="text-sm">Phone</label>
+      <input
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        className="border p-2 bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
 
-        <label className="text-sm">Address</label>
-        <input value={address} onChange={(e) => setAddress(e.target.value)} className="border p-2" />
+      <label className="text-sm">Address</label>
+      <input
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        className="border p-2 bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
 
-        <label className="text-sm">Loyalty points</label>
-        <input value={user?.loyaltyPoints ?? 0} disabled className="border p-2 bg-gray-100" />
+      <label className="text-sm">Loyalty points</label>
+      <input
+        value={user?.loyaltyPoints ?? 0}
+        disabled
+        className="border p-2 bg-gray-100 dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
 
-        <button className="mt-2 bg-orange-500 text-white py-2 rounded">Save profile</button>
-      </form>
-    </motion.main>
-  );
+      <button className="mt-2 bg-orange-500 text-white py-2 rounded">
+        Save profile
+      </button>
+    </form>
+  </motion.main>
+);
 }

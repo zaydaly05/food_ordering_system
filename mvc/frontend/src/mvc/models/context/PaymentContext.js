@@ -1,4 +1,6 @@
 import { createContext, useContext } from "react";
+import { useOrders } from "./OrdersContext";
+
 
 const PaymentContext = createContext();
 export const usePayment = () => useContext(PaymentContext);
@@ -6,6 +8,7 @@ export const usePayment = () => useContext(PaymentContext);
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 
 export const PaymentProvider = ({ children }) => {
+  const { updateOrderStatus } = useOrders();
 
   // Create a payment for a given order
   const createPayment = async (orderId, paymentMethod) => {
@@ -29,13 +32,19 @@ export const PaymentProvider = ({ children }) => {
   };
 
   // Update payment status
-  const updatePaymentStatus = async (paymentId, status) => {
+  const updatePaymentStatus = async (paymentId, orderId, status) => {
     const response = await fetch(
       `${API_BASE_URL}/payments/${paymentId}/status?status=${status}`,
       { method: "PUT", headers: { "Content-Type": "application/json" } }
     );
-    if (!response.ok) throw new Error("Failed to update payment status");
-    return response.json();
+     const payment = await response.json();
+
+    // If payment completed -> confirm order
+    if (status === "COMPLETED") {
+      await updateOrderStatus(orderId, "CONFIRMED");
+    }
+
+    return payment;
   };
 
   // Get all payments (admin)
@@ -45,9 +54,20 @@ export const PaymentProvider = ({ children }) => {
     return response.json();
   };
 
+  const deletePayment = async (paymentId) => {
+    const response = await fetch(`${API_BASE_URL}/payments/${paymentId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to delete payment");
+    }
+    return response.json();
+  };
+
   return (
     <PaymentContext.Provider
-      value={{ createPayment, getPaymentByOrder, updatePaymentStatus, getAllPayments }}
+      value={{ createPayment, getPaymentByOrder, updatePaymentStatus, getAllPayments, deletePayment }}
     >
       {children}
     </PaymentContext.Provider>

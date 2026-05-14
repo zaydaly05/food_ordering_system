@@ -26,36 +26,60 @@ export default function Settings() {
   };
 
   return (
-    <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Settings</h1>
-      {isAdmin ? (
-        <div className="bg-blue-50 border border-blue-100 rounded p-3 mb-4 text-sm">
-          <p className="font-medium mb-1">Admin account</p>
-          <p>Permissions: {(user?.permissions || []).join(", ") || "No permissions set"}</p>
-        </div>
-      ) : null}
+  <motion.main
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="p-6 max-w-3xl mx-auto bg-gray-50 dark:bg-gray-950 dark:text-white min-h-screen"
+  >
+    <h1 className="text-2xl font-bold mb-4">Settings</h1>
 
-      <form onSubmit={save} className="bg-white rounded shadow p-4 flex flex-col gap-3">
-        <label className="flex items-center gap-3">
-          <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} />
-          <span>Receive news & offers</span>
-        </label>
+    {isAdmin ? (
+      <div className="bg-blue-50 dark:bg-blue-900 border border-blue-100 dark:border-blue-800 rounded p-3 mb-4 text-sm">
+        <p className="font-medium mb-1">Admin account</p>
+        <p>
+          Permissions: {(user?.permissions || []).join(", ") || "No permissions set"}
+        </p>
+      </div>
+    ) : null}
 
-        <label className="text-sm">Default payment method</label>
-        <select value={defaultPayment} onChange={(e) => setDefaultPayment(e.target.value)} className="border p-2">
-          <option value="instapay">Instapay</option>
-          <option value="credit">Credit/Debit</option>
-          <option value="cod">Cash on Delivery</option>
-        </select>
+    <form
+      onSubmit={save}
+      className="bg-white dark:bg-gray-900 rounded shadow p-4 flex flex-col gap-3"
+    >
+      <label className="flex items-center gap-3">
+        <input
+          type="checkbox"
+          checked={newsletter}
+          onChange={(e) => setNewsletter(e.target.checked)}
+        />
+        <span>Receive news & offers</span>
+      </label>
 
-        <label className="text-sm">Theme</label>
-        <select value={theme} onChange={(e) => setTheme(e.target.value)} className="border p-2">
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
+      <label className="text-sm">Default payment method</label>
+      <select
+        value={defaultPayment}
+        onChange={(e) => setDefaultPayment(e.target.value)}
+        className="border p-2 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700"
+      >
+        <option value="instapay">Instapay</option>
+        <option value="credit">Credit/Debit</option>
+        <option value="cod">Cash on Delivery</option>
+      </select>
 
-        <button className="mt-2 bg-orange-500 text-white py-2 rounded">Save settings</button>
-      </form>
-    </motion.main>
-  );
+      <label className="text-sm">Theme</label>
+      <select
+        value={theme}
+        onChange={(e) => setTheme(e.target.value)}
+        className="border p-2 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700"
+      >
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+
+      <button className="mt-2 bg-orange-500 text-white py-2 rounded">
+        Save settings
+      </button>
+    </form>
+  </motion.main>
+);
 }

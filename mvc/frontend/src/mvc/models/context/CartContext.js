@@ -137,7 +137,18 @@ export const CartProvider = ({ children }) => {
   };
 
   
-  const clearCart = () => setCart([]);
+  const clearCart = async () => {
+    setCart([]);
+
+    try {
+      await fetch(`${API}/${user.id}/clear`, {
+        method: "DELETE",
+      });
+    } catch (err) {
+      console.error(err);
+      loadCart();
+    }
+  };
 
   return (
     <CartContext.Provider

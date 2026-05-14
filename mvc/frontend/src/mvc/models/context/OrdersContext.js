@@ -70,6 +70,18 @@ const updateOrderStatus = async (orderId, newStatus) => {
     return await response.json();
   };
 
+  const deleteOrder = async (orderId) => {
+    const response = await fetch(`${API_BASE_URL}/${orderId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete order");
+    }
+
+    return true;
+  };
+
   return (
     <OrdersContext.Provider
       value={{
@@ -77,6 +89,7 @@ const updateOrderStatus = async (orderId, newStatus) => {
         getAllOrders,
         updateOrderStatus,
         getUserOrders,
+        deleteOrder,
       }}
     >
       {children}

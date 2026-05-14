@@ -45,9 +45,18 @@ export const DeliveryProvider = ({ children }) => {
     return response.json();
   };
 
+  // Delete a delivery by ID
+  const deleteDelivery = async (deliveryId) => {
+    const response = await fetch(`${API_BASE_URL}/deliveries/${deliveryId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete delivery");
+    return response.json();
+  };
+
   return (
     <DeliveryContext.Provider
-      value={{ createDelivery, getDeliveryByOrder, updateDeliveryStatus, getAllDeliveries }}
+      value={{ createDelivery, getDeliveryByOrder, updateDeliveryStatus, getAllDeliveries, deleteDelivery }}
     >
       {children}
     </DeliveryContext.Provider>

@@ -96,7 +96,7 @@ const handleEdit = (restaurant) => {
   });
 };
 return (
-  <div className="p-6 max-w-6xl mx-auto">
+  <div className="p-6 max-w-6xl mx-auto bg-gray-100 dark:bg-slate-950 min-h-screen text-black dark:text-white">
 
     <div className="flex justify-between items-center mb-6">
       <h1 className="text-3xl font-bold">
@@ -104,49 +104,48 @@ return (
       </h1>
     </div>
 
-    <div className="bg-white p-6 rounded-lg shadow mb-8">
+    {/* FORM CARD */}
+    <div className="bg-white dark:bg-slate-900 p-6 rounded-lg shadow mb-8">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-4 gap-4"
+      >
 
-   <form
-  onSubmit={handleSubmit}
-  className="grid grid-cols-1 md:grid-cols-4 gap-4"
->
-  
-<input
-  type="text"
-  name="name"
-  placeholder="Restaurant Name"
-  value={form.name}
-  onChange={handleChange}
-  className="border p-3 rounded"
-/>
+        <input
+          type="text"
+          name="name"
+          placeholder="Restaurant Name"
+          value={form.name}
+          onChange={handleChange}
+          className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+        />
 
+        <input
+          type="text"
+          name="image"
+          placeholder="Image Name (example: pizza-hut.jpg)"
+          value={form.image}
+          onChange={handleChange}
+          className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+        />
 
-<input
-  type="text"
-  name="image"
-  placeholder="Image Name (example: pizza-hut.jpg)"
-  value={form.image}
-  onChange={handleChange}
-  className="border p-3 rounded"
-/>
+        <input
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={form.address}
+          onChange={handleChange}
+          className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+        />
 
-   <input
-  type="text"
-  name="address"
-  placeholder="Address"
-  value={form.address}
-  onChange={handleChange}
-  className="border p-3 rounded"
-/>
-
-  <input
-  type="text"
-  name="phone"
-  placeholder="Phone"
-  value={form.phone}
-  onChange={handleChange}
-  className="border p-3 rounded"
-/>
+        <input
+          type="text"
+          name="phone"
+          placeholder="Phone"
+          value={form.phone}
+          onChange={handleChange}
+          className="border p-3 rounded bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+        />
 
         <button
           type="submit"
@@ -154,17 +153,18 @@ return (
         >
           Add Restaurant
         </button>
-
       </form>
     </div>
 
+    {/* RESTAURANT GRID */}
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
       {restaurants.map((r) => (
         <div
           key={r.id}
-          className="bg-white p-5 rounded-lg shadow"
+          className="bg-white dark:bg-slate-900 p-5 rounded-lg shadow"
         >
+
           <img
             src={r.image}
             alt={r.name}
@@ -175,29 +175,30 @@ return (
             {r.name}
           </h2>
 
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             {r.address}
           </p>
 
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             {r.phone}
           </p>
 
           <div className="flex gap-2">
 
-       <button
-  onClick={() => handleEdit(r)}
-  className="bg-blue-500 text-white px-4 py-2 rounded"
->
-  Edit
-</button>
+            <button
+              onClick={() => handleEdit(r)}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Edit
+            </button>
 
-      <button
-  onClick={() => handleDelete(r.id)}
-  className="bg-red-500 text-white px-4 py-2 rounded"
->
-  Delete
-</button>
+            <button
+              onClick={() => handleDelete(r.id)}
+              className="bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Delete
+            </button>
+
           </div>
 
         </div>

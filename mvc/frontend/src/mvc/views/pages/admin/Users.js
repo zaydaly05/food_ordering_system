@@ -137,115 +137,162 @@ export default function AdminUsersPanel() {
     }
   };
 
-  return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">Users</h1>
+ return (
+  <div>
+    <h1 className="text-xl font-bold mb-4 text-black dark:text-white">
+      Users
+    </h1>
 
-      <div className="bg-white rounded shadow p-4 mb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-        <input value={newUser.name} onChange={(e) => updateNewField("name", e.target.value)} placeholder="Full name" className="border rounded px-3 py-2 text-sm" />
-        <input value={newUser.email} onChange={(e) => updateNewField("email", e.target.value)} placeholder="Email *" className="border rounded px-3 py-2 text-sm" />
-        <input value={newUser.phone} onChange={(e) => updateNewField("phone", e.target.value)} placeholder="Phone" className="border rounded px-3 py-2 text-sm" />
-        <input value={newUser.address} onChange={(e) => updateNewField("address", e.target.value)} placeholder="Address" className="border rounded px-3 py-2 text-sm" />
-        <input type="password" value={newUser.password} onChange={(e) => updateNewField("password", e.target.value)} placeholder="Password *" className="border rounded px-3 py-2 text-sm" />
-        <div className="flex items-center gap-2">
-          <select
-            value={newUser.role}
-            onChange={(e) => updateNewField("role", e.target.value)}
-            className="border rounded px-2 py-2 text-sm"
-          >
-            <option value={USER_ROLES.CUSTOMER}>CUSTOMER</option>
-            <option value={USER_ROLES.ADMIN}>ADMIN</option>
-          </select>
-          <button
-            onClick={handleCreate}
-            disabled={savingUserId === "new"}
-            className="text-sm px-3 py-2 rounded bg-green-600 text-white disabled:bg-green-300"
-          >
-            {savingUserId === "new" ? "Adding..." : "Add user"}
-          </button>
-        </div>
+    {/* CREATE USER CARD */}
+    <div className="bg-white dark:bg-slate-900 rounded shadow p-4 mb-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+      
+      <input
+        value={newUser.name}
+        onChange={(e) => updateNewField("name", e.target.value)}
+        placeholder="Full name"
+        className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        value={newUser.email}
+        onChange={(e) => updateNewField("email", e.target.value)}
+        placeholder="Email *"
+        className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        value={newUser.phone}
+        onChange={(e) => updateNewField("phone", e.target.value)}
+        placeholder="Phone"
+        className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        value={newUser.address}
+        onChange={(e) => updateNewField("address", e.target.value)}
+        placeholder="Address"
+        className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <input
+        type="password"
+        value={newUser.password}
+        onChange={(e) => updateNewField("password", e.target.value)}
+        placeholder="Password *"
+        className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+      />
+
+      <div className="flex items-center gap-2">
+        <select
+          value={newUser.role}
+          onChange={(e) => updateNewField("role", e.target.value)}
+          className="border rounded px-2 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+        >
+          <option value={USER_ROLES.CUSTOMER}>CUSTOMER</option>
+          <option value={USER_ROLES.ADMIN}>ADMIN</option>
+        </select>
+
+        <button
+          onClick={handleCreate}
+          disabled={savingUserId === "new"}
+          className="text-sm px-3 py-2 rounded bg-green-600 text-white disabled:bg-green-300"
+        >
+          {savingUserId === "new" ? "Adding..." : "Add user"}
+        </button>
       </div>
-
-      {loading ? (
-        <div className="text-gray-500">Loading users from database...</div>
-      ) : null}
-
-      {!loading && users.length === 0 ? (
-        <div className="text-gray-500">No users found.</div>
-      ) : (
-        <div className="grid gap-3">
-          {users.map((u) => (
-            <div key={u.id} className="bg-white rounded shadow p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="md:col-span-2 text-xs text-gray-500">
-                ID: {u.id}
-              </div>
-
-              <input
-                value={u.name || ""}
-                onChange={(e) => updateField(u.id, "name", e.target.value)}
-                placeholder="Name"
-                className="border rounded px-3 py-2 text-sm"
-              />
-
-              <input
-                value={u.email || ""}
-                onChange={(e) => updateField(u.id, "email", e.target.value)}
-                placeholder="Email"
-                className="border rounded px-3 py-2 text-sm"
-              />
-
-              <input
-                value={u.phone || ""}
-                onChange={(e) => updateField(u.id, "phone", e.target.value)}
-                placeholder="Phone"
-                className="border rounded px-3 py-2 text-sm"
-              />
-
-              <input
-                value={u.address || ""}
-                onChange={(e) => updateField(u.id, "address", e.target.value)}
-                placeholder="Address"
-                className="border rounded px-3 py-2 text-sm"
-              />
-
-              <input
-                type="password"
-                value={u.password || ""}
-                onChange={(e) => updateField(u.id, "password", e.target.value)}
-                placeholder="New password (optional)"
-                className="border rounded px-3 py-2 text-sm"
-              />
-
-              <div className="flex items-center gap-2">
-                <select
-                  value={u.role || USER_ROLES.CUSTOMER}
-                  onChange={(e) => updateField(u.id, "role", e.target.value)}
-                  className="border rounded px-2 py-1 text-sm"
-                >
-                  <option value={USER_ROLES.CUSTOMER}>CUSTOMER</option>
-                  <option value={USER_ROLES.ADMIN}>ADMIN</option>
-                </select>
-
-                <button
-                  onClick={() => handleSave(u)}
-                  disabled={savingUserId === u.id}
-                  className="text-sm px-3 py-1 rounded bg-orange-500 text-white disabled:bg-orange-300"
-                >
-                  {savingUserId === u.id ? "Saving..." : "Save"}
-                </button>
-
-                <button
-                  onClick={() => handleDelete(u)}
-                  disabled={String(u.id) === String(user?.id) || deletingUserId === u.id}
-                  className="text-sm px-3 py-1 rounded bg-red-500 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
-                >
-                  {deletingUserId === u.id ? "Deleting..." : "Delete"}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
-  );
+
+    {/* LOADING */}
+    {loading ? (
+      <div className="text-gray-500 dark:text-gray-400">
+        Loading users from database...
+      </div>
+    ) : null}
+
+    {/* EMPTY STATE */}
+    {!loading && users.length === 0 ? (
+      <div className="text-gray-500 dark:text-gray-400">
+        No users found.
+      </div>
+    ) : (
+      <div className="grid gap-3">
+        {users.map((u) => (
+          <div
+            key={u.id}
+            className="bg-white dark:bg-slate-900 rounded shadow p-4 grid grid-cols-1 md:grid-cols-2 gap-3"
+          >
+            <div className="md:col-span-2 text-xs text-gray-500 dark:text-gray-400">
+              ID: {u.id}
+            </div>
+
+            <input
+              value={u.name || ""}
+              onChange={(e) => updateField(u.id, "name", e.target.value)}
+              placeholder="Name"
+              className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+            />
+
+            <input
+              value={u.email || ""}
+              onChange={(e) => updateField(u.id, "email", e.target.value)}
+              placeholder="Email"
+              className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+            />
+
+            <input
+              value={u.phone || ""}
+              onChange={(e) => updateField(u.id, "phone", e.target.value)}
+              placeholder="Phone"
+              className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+            />
+
+            <input
+              value={u.address || ""}
+              onChange={(e) => updateField(u.id, "address", e.target.value)}
+              placeholder="Address"
+              className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+            />
+
+            <input
+              type="password"
+              value={u.password || ""}
+              onChange={(e) => updateField(u.id, "password", e.target.value)}
+              placeholder="New password (optional)"
+              className="border rounded px-3 py-2 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+            />
+
+            <div className="flex items-center gap-2">
+              <select
+                value={u.role || USER_ROLES.CUSTOMER}
+                onChange={(e) => updateField(u.id, "role", e.target.value)}
+                className="border rounded px-2 py-1 text-sm bg-white dark:bg-slate-800 text-black dark:text-white border-gray-300 dark:border-slate-700"
+              >
+                <option value={USER_ROLES.CUSTOMER}>CUSTOMER</option>
+                <option value={USER_ROLES.ADMIN}>ADMIN</option>
+              </select>
+
+              <button
+                onClick={() => handleSave(u)}
+                disabled={savingUserId === u.id}
+                className="text-sm px-3 py-1 rounded bg-orange-500 text-white disabled:bg-orange-300"
+              >
+                {savingUserId === u.id ? "Saving..." : "Save"}
+              </button>
+
+              <button
+                onClick={() => handleDelete(u)}
+                disabled={
+                  String(u.id) === String(user?.id) || deletingUserId === u.id
+                }
+                className="text-sm px-3 py-1 rounded bg-red-500 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                {deletingUserId === u.id ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
 }

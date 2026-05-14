@@ -46,4 +46,9 @@ public class CartController {
     ) {
         return cartService.removeItem(userId, itemId);
     }
+
+    @DeleteMapping("/{userId}/clear")
+    public Cart clearCart(@PathVariable String userId) {
+        return cartService.clearCart(userId);
+    }
 }

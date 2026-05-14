@@ -3,19 +3,19 @@ import { useState } from "react";
 import Navbar from "../views/components/Navbar";
 import CartDrawer from "../views/components/CartDrawer";
 import AnimatedBackground from "../views/components/AnimatedBackground";
-import Home from "../views/pages/Home";
+
 import Landing from "../views/pages/Landing";
 import About from "../views/pages/About";
 import Checkout from "../views/pages/Checkout";
 import Orders from "../views/pages/Orders";
 import Login from "../views/pages/Login";
-import ProductDetail from "../views/pages/ProductDetail";
+
 import NotFound from "../views/pages/NotFound";
 import Profile from "../views/pages/Profile";
 import Settings from "../views/pages/Settings";
 
 import Dashboard from "../views/pages/admin/Dashboard";
-import Products from "../views/pages/admin/Products";
+
 import OrdersAdmin from "../views/pages/admin/OrdersAdmin";
 import Users from "../views/pages/admin/Users";
 import AdminLayout from "../views/layouts/AdminLayout";
@@ -69,7 +69,7 @@ export default function App() {
               <main className="flex-1">
                 <Routes>
                   <Route path="/" element={<Landing />} />
-                  <Route path="/menu" element={<Home />} />
+                 
 
                   <Route
                     path="/checkout"
@@ -84,14 +84,7 @@ export default function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/about" element={<About />} />
 
-                  <Route
-                    path="/product/:id"
-                    element={
-                      <RequireAuth allowedRoles={[USER_ROLES.CUSTOMER]}>
-                        <ProductDetail />
-                      </RequireAuth>
-                    }
-                  />
+                  
 
                   <Route
                     path="/profile"
@@ -113,14 +106,7 @@ export default function App() {
                     }
                   />
 
-                  <Route
-                    path="/admin/products"
-                    element={
-                      <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
-                        <AdminLayout><Products /></AdminLayout>
-                      </RequireAuth>
-                    }
-                  />
+                 
 
                   <Route
                     path="/admin/orders"

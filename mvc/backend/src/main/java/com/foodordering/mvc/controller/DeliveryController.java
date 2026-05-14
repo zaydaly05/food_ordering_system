@@ -44,6 +44,12 @@ public class DeliveryController {
         return ResponseEntity.ok(deliveryService.getAllDeliveries());
     }
 
+    @DeleteMapping("/{deliveryId}")
+    public ResponseEntity<Map<String, String>> deleteDelivery(@PathVariable String deliveryId) {
+        deliveryService.deleteDelivery(deliveryId);
+        return ResponseEntity.ok(Map.of("message", "Delivery deleted successfully"));
+    }
+
     // Simple error handler for this controller
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleError(RuntimeException ex) {

@@ -66,4 +66,11 @@ public class DeliveryService {
     public List<Delivery> getAllDeliveries() {
         return deliveryRepository.findAllByOrderByCreatedAtDesc();
     }
+
+    // Delete a delivery by ID
+    public void deleteDelivery(String deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new RuntimeException("Delivery not found with id: " + deliveryId));
+        deliveryRepository.delete(delivery);
+    }
 }

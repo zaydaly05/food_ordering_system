@@ -49,4 +49,10 @@ public class PaymentController {
     public ResponseEntity<Map<String, String>> handleError(RuntimeException ex) {
         return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
     }
+
+    @DeleteMapping("/{paymentId}")
+    public ResponseEntity<Map<String, String>> deletePayment(@PathVariable String paymentId) {
+        paymentService.deletePayment(paymentId);
+        return ResponseEntity.ok(Map.of("message", "Payment deleted successfully"));
+    }
 }

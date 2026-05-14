@@ -89,21 +89,32 @@ public class CartService {
 
     public Cart removeItem(String userId, String productId) {
 
-    Cart cart = cartRepository.findByUserId(userId)
-            .orElseThrow(() -> new RuntimeException("Cart not found"));
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-    
-    cart.getItems().removeIf(item ->
-            item.getProductId().equals(productId)
-    );
+        
+        cart.getItems().removeIf(item ->
+                item.getProductId().equals(productId)
+        );
 
-    double total = cart.getItems()
-            .stream()
-            .mapToDouble(i -> i.getPrice() * i.getQuantity())
-            .sum();
+        double total = cart.getItems()
+                .stream()
+                .mapToDouble(i -> i.getPrice() * i.getQuantity())
+                .sum();
 
-    cart.setTotalPrice(total);
+        cart.setTotalPrice(total);
 
-    return cartRepository.save(cart);
-}
+        return cartRepository.save(cart);
+    }
+
+    public Cart clearCart(String userId) {
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        cart.setItems(new ArrayList<>());
+        cart.setTotalPrice(0.0);
+
+        return cartRepository.save(cart);
+
+    }
 }
