@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useOrders } from "../../models/context/OrdersContext";
 import {useCart} from "../../models/context/CartContext";
 import { useAuth } from "../../models/context/AuthContext"; 
@@ -10,20 +11,23 @@ export default function Orders() {
 
   const [orders, setOrders] = useState([]);
 
-  const handleReorder = (order) => {
-  order.items.forEach((item) => {
-    if (!item.productId) {
-      console.error("Missing productId in order item:", item);
-      return;
-    }
+ const handleReorder = async (order) => {
+  if (!order?.items?.length) return;
 
-    addToCart({
-      id: item.productId,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity || 1,
-    });
-  });
+  for (const item of order.items) {
+    try {
+      await addToCart({
+        id: item.productId,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity || 1,
+      });
+    } catch (err) {
+      console.error("Failed item:", item, err);
+    }
+  }
+
+  toast.success("Order reordered");
 };
 
   useEffect(() => {

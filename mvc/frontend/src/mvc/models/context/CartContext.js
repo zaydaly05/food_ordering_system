@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState , useEffect  } from "react";
 import { useAuth } from "./AuthContext";
 import toast from "react-hot-toast";
 
@@ -25,64 +25,77 @@ export const CartProvider = ({ children }) => {
       console.error(err);
     }
   };
+ 
 
+  useEffect(() => {
+    if (user) loadCart();
+  }, [user]);
  
 
  
-
 
   const addToCart = async (item) => {
-    if (!isLoggedIn) {
-      openLogin();
-      toast.error("Please log in to add items to cart");
-      return;
+  if (!isLoggedIn) {
+    openLogin();
+    toast.error("Please log in to add items to cart");
+    return;
+  }
+
+  const productId =
+    item.id || item._id || item.productId;
+
+  const qty = item.quantity || 1;
+
+  // Update local cart
+  setCart((prev) => {
+    const existing = prev.find(
+      (i) => i.productId === productId
+    );
+
+    if (existing) {
+      return prev.map((i) =>
+        i.productId === productId
+          ? {
+              ...i,
+              quantity: i.quantity + qty,
+            }
+          : i
+      );
     }
 
-    const productId = item.id || item._id;
+    return [
+      ...prev,
+      {
+        productId,
+        name: item.name,
+        price: item.price,
+        quantity: qty,
+      },
+    ];
+  });
 
-    
-    setCart((prev) => {
-      const existing = prev.find((i) => i.productId === productId);
-
-      if (existing) {
-        return prev.map((i) =>
-          i.productId === productId
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
-        );
-      }
-
-      return [
-        ...prev,
-        {
-          productId,
-          name: item.name,
-          price: item.price,
-          quantity: 1,
-        },
-      ];
+  // Save to backend
+  try {
+    await fetch(`${API}/${user.id}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        productId,
+        name: item.name,
+        price: item.price,
+        quantity: qty,
+      }),
     });
 
-  
-    try {
-      await fetch(`${API}/${user.id}/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId,
-          name: item.name,
-          price: item.price,
-          quantity: 1,
-        }),
-      });
-
-    toast.success("Added to 🛒"); 
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to add item to 🛒 ");
-      loadCart(); 
-    }
-  };
+    toast.success("Added to 🛒");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add item to 🛒");
+    loadCart();
+  }
+};
 
   
 

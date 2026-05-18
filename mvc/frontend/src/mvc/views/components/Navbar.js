@@ -187,13 +187,16 @@ export default function Navbar({ setIsCartOpen }) {
                   </Link>
                 ) : null}
 
-                <Link
-                  to="/settings"
-                  onClick={() => setOpen(false)}
-                  className="hover:text-orange-500 transition-colors duration-200"
-                >
+                
+                  <Link
+                    to="/settings"
+                    onClick={() => setOpen(false)}
+                    className="hover:text-orange-500 transition-colors duration-200"
+                  >
                   Settings
                 </Link>
+             
+
 
                 {isAdmin ? (
                   <Link
@@ -218,6 +221,8 @@ export default function Navbar({ setIsCartOpen }) {
                 </button>
               </>
             ) : (
+              
+
               <button
                 onClick={() => {
                   openLogin();
